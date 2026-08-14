@@ -1,13 +1,69 @@
-import { ArrowRight, ShieldCheck, Wallet, Zap } from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import {
+  ArrowRight,
+  Briefcase,
+  CheckCircle2,
+  ShieldCheck,
+  UserRound,
+  Wallet,
+  Zap,
+} from "lucide-react";
 import { SearchFilterBar } from "./search-filter-bar";
 
-const TRUST_BADGES = [
-  { icon: ShieldCheck, label: "ID-verified specialists" },
-  { icon: Wallet, label: "Direct Wise payments" },
-  { icon: Zap, label: "0% placement commission" },
+type Persona = "employer" | "talent";
+
+const PERSONA_CONTENT: Record<
+  Persona,
+  {
+    eyebrow: string;
+    headlineLead: string;
+    headlineHighlight: string;
+    body: string;
+    primaryCta: { label: string; href: string };
+    secondaryCta: { label: string; href: string };
+    trustBadges: { icon: typeof ShieldCheck; label: string }[];
+  }
+> = {
+  employer: {
+    eyebrow: "Now onboarding EA, video editing & e-commerce ops talent",
+    headlineLead: "Hire top-tier Filipino talent, ",
+    headlineHighlight: "direct — no agency markup.",
+    body: "DirectStaffPH connects US, UK, AU, and EU founders with verified Executive Assistants, Video Editors, E-commerce Ops, Bookkeepers, and Media Buyers — ready to work, vetted, and paid directly.",
+    primaryCta: { label: "Browse Talent", href: "#talent" },
+    secondaryCta: { label: "Post a Job", href: "#pricing" },
+    trustBadges: [
+      { icon: ShieldCheck, label: "ID-verified specialists" },
+      { icon: Wallet, label: "Direct Wise payments" },
+      { icon: Zap, label: "0% placement commission" },
+    ],
+  },
+  talent: {
+    eyebrow: "500+ Filipino specialists hired directly, no agency in between",
+    headlineLead: "Get hired directly by employers abroad, ",
+    headlineHighlight: "and keep 100% of your pay.",
+    body: "Create a free profile, add your software skills and a short video intro, and get discovered by founders and agency owners in the US, UK, AU, and EU. No agency cut, ever.",
+    primaryCta: { label: "Create Your Profile", href: "#" },
+    secondaryCta: { label: "See How It Works", href: "#value" },
+    trustBadges: [
+      { icon: ShieldCheck, label: "Free, verified profile" },
+      { icon: Wallet, label: "Paid directly via Wise" },
+      { icon: Zap, label: "You keep 100% of your rate" },
+    ],
+  },
+};
+
+const TALENT_HIGHLIGHTS = [
+  "List your software skills and get matched to relevant roles",
+  "Add a short video intro so employers see the real you",
+  "Get paid directly — no agency ever touches your rate",
 ];
 
 export function Hero() {
+  const [persona, setPersona] = useState<Persona>("employer");
+  const content = PERSONA_CONTENT[persona];
+
   return (
     <section className="relative overflow-hidden bg-brand-navy pb-24 pt-16 sm:pt-24">
       <div
@@ -17,39 +73,58 @@ export function Hero() {
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-cyan-300">
-            Now onboarding EA, video editing & e-commerce ops talent
-          </span>
+          <div
+            role="tablist"
+            aria-label="I am a..."
+            className="mx-auto inline-flex rounded-full border border-white/10 bg-white/5 p-1"
+          >
+            <PersonaTab
+              icon={Briefcase}
+              label="I'm Hiring"
+              isActive={persona === "employer"}
+              onClick={() => setPersona("employer")}
+            />
+            <PersonaTab
+              icon={UserRound}
+              label="I'm Looking for Work"
+              isActive={persona === "talent"}
+              onClick={() => setPersona("talent")}
+            />
+          </div>
+
+          <div className="mt-6">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-cyan-300">
+              {content.eyebrow}
+            </span>
+          </div>
 
           <h1 className="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-            Hire top-tier Filipino talent,{" "}
-            <span className="text-brand-accent">direct — no agency markup.</span>
+            {content.headlineLead}
+            <span className="text-brand-accent">{content.headlineHighlight}</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-300">
-            DirectStaffPH connects US, UK, AU, and EU founders with verified
-            Executive Assistants, Video Editors, E-commerce Ops, Bookkeepers,
-            and Media Buyers &mdash; ready to work, vetted, and paid directly.
+            {content.body}
           </p>
 
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <a
-              href="#talent"
+              href={content.primaryCta.href}
               className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-accent px-6 py-3 text-sm font-semibold text-brand-navy transition-colors hover:bg-cyan-300 sm:w-auto"
             >
-              Browse Talent
+              {content.primaryCta.label}
               <ArrowRight className="h-4 w-4" />
             </a>
             <a
-              href="#pricing"
+              href={content.secondaryCta.href}
               className="w-full rounded-full border border-white/20 px-6 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-white/10 sm:w-auto"
             >
-              Post a Job
+              {content.secondaryCta.label}
             </a>
           </div>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-            {TRUST_BADGES.map(({ icon: Icon, label }) => (
+            {content.trustBadges.map(({ icon: Icon, label }) => (
               <div
                 key={label}
                 className="flex items-center gap-2 text-sm text-slate-400"
@@ -62,9 +137,75 @@ export function Hero() {
         </div>
 
         <div className="mx-auto mt-14 max-w-4xl">
-          <SearchFilterBar />
+          {persona === "employer" ? (
+            <SearchFilterBar />
+          ) : (
+            <TalentCtaPanel />
+          )}
         </div>
       </div>
     </section>
+  );
+}
+
+function PersonaTab({
+  icon: Icon,
+  label,
+  isActive,
+  onClick,
+}: {
+  icon: typeof Briefcase;
+  label: string;
+  isActive: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={isActive}
+      onClick={onClick}
+      className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+        isActive
+          ? "bg-brand-accent text-brand-navy"
+          : "text-slate-300 hover:text-white"
+      }`}
+    >
+      <Icon className="h-4 w-4" />
+      {label}
+    </button>
+  );
+}
+
+function TalentCtaPanel() {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/20 backdrop-blur sm:p-8">
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-lg font-semibold text-white">
+            Ready to get discovered?
+          </h2>
+          <ul className="mt-4 space-y-2.5">
+            {TALENT_HIGHLIGHTS.map((highlight) => (
+              <li
+                key={highlight}
+                className="flex items-start gap-2 text-sm text-slate-300"
+              >
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-accent" />
+                {highlight}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <a
+          href="#"
+          className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-brand-accent px-6 py-3 text-sm font-semibold text-brand-navy transition-colors hover:bg-cyan-300"
+        >
+          Create Your Free Profile
+          <ArrowRight className="h-4 w-4" />
+        </a>
+      </div>
+    </div>
   );
 }
