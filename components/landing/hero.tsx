@@ -28,9 +28,9 @@ const PERSONA_CONTENT: Record<
 > = {
   employer: {
     eyebrow: "Now onboarding EA, video editing & e-commerce ops talent",
-    headlineLead: "Hire top-tier Filipino talent, ",
+    headlineLead: "Hire top-tier Filipino talent,",
     headlineHighlight: "direct — no agency markup.",
-    body: "DirectStaffPH connects US, UK, AU, and EU founders with verified Executive Assistants, Video Editors, E-commerce Ops, Bookkeepers, and Media Buyers — ready to work, vetted, and paid directly.",
+    body: "Verified Executive Assistants, Video Editors, E-commerce Ops, Bookkeepers, and Media Buyers — ready to work, paid directly.",
     primaryCta: { label: "Browse Talent", href: "#talent" },
     secondaryCta: { label: "Post a Job", href: "#pricing" },
     trustBadges: [
@@ -40,10 +40,10 @@ const PERSONA_CONTENT: Record<
     ],
   },
   talent: {
-    eyebrow: "500+ Filipino specialists hired directly, no agency in between",
-    headlineLead: "Get hired directly by employers abroad, ",
-    headlineHighlight: "and keep 100% of your pay.",
-    body: "Create a free profile, add your software skills and a short video intro, and get discovered by founders and agency owners in the US, UK, AU, and EU. No agency cut, ever.",
+    eyebrow: "500+ Filipino specialists hired directly",
+    headlineLead: "Get hired directly by employers abroad,",
+    headlineHighlight: "keep 100% of your pay.",
+    body: "Build a free profile with your skills and a video intro, and get discovered by employers in the US, UK, AU, and EU.",
     primaryCta: { label: "Create Your Profile", href: "#" },
     secondaryCta: { label: "See How It Works", href: "#value" },
     trustBadges: [
@@ -92,22 +92,22 @@ export function Hero() {
             />
           </div>
 
-          <div className="mt-6">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-cyan-300">
-              {content.eyebrow}
-            </span>
-          </div>
+          <p className="mt-8 text-xs font-semibold uppercase tracking-wider text-cyan-400">
+            {content.eyebrow}
+          </p>
 
-          <h1 className="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-            {content.headlineLead}
-            <span className="text-brand-accent">{content.headlineHighlight}</span>
+          <h1 className="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+            <span className="block">{content.headlineLead}</span>
+            <span className="block text-brand-accent">
+              {content.headlineHighlight}
+            </span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-300">
+          <p className="mx-auto mt-6 max-w-xl text-lg leading-7 text-slate-300">
             {content.body}
           </p>
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <a
               href={content.primaryCta.href}
               className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-accent px-6 py-3 text-sm font-semibold text-brand-navy transition-colors hover:bg-cyan-300 sm:w-auto"
@@ -123,7 +123,7 @@ export function Hero() {
             </a>
           </div>
 
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
             {content.trustBadges.map(({ icon: Icon, label }) => (
               <div
                 key={label}
@@ -136,7 +136,7 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="mx-auto mt-14 max-w-4xl">
+        <div className="mx-auto mt-12 max-w-4xl">
           {persona === "employer" ? (
             <SearchFilterBar />
           ) : (
