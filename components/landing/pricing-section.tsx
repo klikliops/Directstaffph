@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Check } from "lucide-react";
 import { PRICING_PLANS } from "@/lib/mock-data";
 
@@ -59,8 +60,8 @@ export function PricingSection() {
                 ))}
               </ul>
 
-              <a
-                href="#"
+              <Link
+                href="/signup?role=employer"
                 className={`mt-8 inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold transition-colors ${
                   plan.isMostPopular
                     ? "bg-brand-accent text-brand-navy hover:bg-cyan-300"
@@ -68,7 +69,7 @@ export function PricingSection() {
                 }`}
               >
                 {plan.ctaLabel}
-              </a>
+              </Link>
             </div>
           ))}
         </div>

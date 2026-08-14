@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   ArrowRight,
   Briefcase,
@@ -44,7 +45,7 @@ const PERSONA_CONTENT: Record<
     headlineLead: "Get hired directly by employers abroad,",
     headlineHighlight: "keep 100% of your pay.",
     body: "Build a free profile with your skills and a video intro, and get discovered by employers in the US, UK, AU, and EU.",
-    primaryCta: { label: "Create Your Profile", href: "#" },
+    primaryCta: { label: "Create Your Profile", href: "/signup?role=jobseeker" },
     secondaryCta: { label: "See How It Works", href: "#value" },
     trustBadges: [
       { icon: ShieldCheck, label: "Free, verified profile" },
@@ -108,19 +109,19 @@ export function Hero() {
           </p>
 
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <a
+            <Link
               href={content.primaryCta.href}
               className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-accent px-6 py-3 text-sm font-semibold text-brand-navy transition-colors hover:bg-cyan-300 sm:w-auto"
             >
               {content.primaryCta.label}
               <ArrowRight className="h-4 w-4" />
-            </a>
-            <a
+            </Link>
+            <Link
               href={content.secondaryCta.href}
               className="w-full rounded-full border border-white/20 px-6 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-white/10 sm:w-auto"
             >
               {content.secondaryCta.label}
-            </a>
+            </Link>
           </div>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
@@ -198,13 +199,13 @@ function TalentCtaPanel() {
           </ul>
         </div>
 
-        <a
-          href="#"
+        <Link
+          href="/signup?role=jobseeker"
           className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-brand-accent px-6 py-3 text-sm font-semibold text-brand-navy transition-colors hover:bg-cyan-300"
         >
           Create Your Free Profile
           <ArrowRight className="h-4 w-4" />
-        </a>
+        </Link>
       </div>
     </div>
   );

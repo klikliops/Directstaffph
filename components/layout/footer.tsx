@@ -14,7 +14,7 @@ const FOOTER_COLUMNS = [
   {
     heading: "Talent",
     links: [
-      { label: "Create a Profile", href: "#" },
+      { label: "Create a Profile", href: "/signup?role=jobseeker" },
       { label: "Browse Jobs", href: "#" },
       { label: "Get Verified", href: "#" },
     ],
