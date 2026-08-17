@@ -5,6 +5,7 @@ const NAV_LINKS = [
   { label: "Browse Talent", href: "#talent" },
   { label: "How It Works", href: "#value" },
   { label: "Pricing", href: "#pricing" },
+  { label: "Get Started", href: "/get-started" },
 ];
 
 export function Navbar() {
@@ -22,13 +23,13 @@ export function Navbar() {
 
         <nav className="hidden items-center gap-8 md:flex">
           {NAV_LINKS.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               className="text-sm font-medium text-slate-300 transition-colors hover:text-white"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
