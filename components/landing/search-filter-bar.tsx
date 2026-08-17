@@ -18,21 +18,21 @@ export function SearchFilterBar() {
   const [activeTool, setActiveTool] = useState<SoftwareTool | "All">("All");
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-2xl shadow-black/20 backdrop-blur sm:p-6">
-      <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-brand-navy px-4 py-3">
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+      <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
         <Search className="h-4 w-4 shrink-0 text-slate-400" />
         <input
           type="text"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search by role, skill, or software (e.g. “Shopify EA”)"
-          className="w-full bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none"
+          className="w-full bg-transparent text-sm text-brand-navy placeholder:text-slate-400 focus:outline-none"
         />
       </div>
 
       <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex flex-1 flex-wrap gap-2">
-          <span className="mr-1 mt-1.5 text-xs font-medium uppercase tracking-wide text-slate-500">
+          <span className="mr-1 mt-1.5 text-xs font-medium uppercase tracking-wide text-slate-400">
             Category
           </span>
           <FilterChip
@@ -53,7 +53,7 @@ export function SearchFilterBar() {
 
       <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex flex-1 flex-wrap gap-2">
-          <span className="mr-1 mt-1.5 text-xs font-medium uppercase tracking-wide text-slate-500">
+          <span className="mr-1 mt-1.5 text-xs font-medium uppercase tracking-wide text-slate-400">
             Software
           </span>
           <FilterChip
@@ -71,12 +71,12 @@ export function SearchFilterBar() {
           ))}
         </div>
 
-        <a
-          href="#talent"
+        <button
+          type="button"
           className="inline-flex shrink-0 items-center justify-center rounded-lg bg-brand-accent px-5 py-2 text-sm font-semibold text-brand-navy transition-colors hover:bg-cyan-300"
         >
           Search Talent
-        </a>
+        </button>
       </div>
     </div>
   );
@@ -98,7 +98,7 @@ function FilterChip({
       className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
         isActive
           ? "bg-brand-accent text-brand-navy"
-          : "bg-white/5 text-slate-300 hover:bg-white/10"
+          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
       }`}
     >
       {label}

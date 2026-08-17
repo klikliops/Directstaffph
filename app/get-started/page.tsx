@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { Briefcase, Search, UserRound } from "lucide-react";
+import { Briefcase } from "lucide-react";
+import { PickerSection } from "@/components/get-started/picker-section";
 
 export const metadata: Metadata = {
   title: "Get Started — DirectStaffPH",
@@ -21,46 +21,8 @@ export default function GetStartedPage() {
           Connect directly with verified Filipino talent. Pick how you&rsquo;re joining.
         </p>
 
-        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <PickerCard
-            href="/#talent"
-            icon={Search}
-            title="Find Talent"
-            subtitle="Browse & hire specialists"
-          />
-          <PickerCard
-            href="/signup?role=jobseeker"
-            icon={UserRound}
-            title="Find a Job"
-            subtitle="Create your free profile"
-          />
-        </div>
+        <PickerSection />
       </div>
     </div>
-  );
-}
-
-function PickerCard({
-  href,
-  icon: Icon,
-  title,
-  subtitle,
-}: {
-  href: string;
-  icon: typeof Search;
-  title: string;
-  subtitle: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="group flex min-h-[280px] flex-col items-center justify-center rounded-3xl border border-slate-200 bg-white p-12 shadow-sm transition-all hover:-translate-y-1 hover:border-brand-accent hover:shadow-xl"
-    >
-      <span className="flex h-20 w-20 items-center justify-center rounded-2xl bg-slate-50 transition-colors group-hover:bg-cyan-50">
-        <Icon className="h-10 w-10 text-brand-accent-dark" strokeWidth={2} />
-      </span>
-      <h2 className="mt-6 text-2xl font-bold text-brand-navy">{title}</h2>
-      <p className="mt-2 text-base text-slate-500">{subtitle}</p>
-    </Link>
   );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Briefcase } from "lucide-react";
+import { AuthCard } from "./auth-card";
 
 export function AuthShell({
   title,
@@ -27,16 +28,9 @@ export function AuthShell({
           </span>
         </Link>
 
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-black/20 backdrop-blur">
-          <h1 className="text-center text-2xl font-bold text-white">
-            {title}
-          </h1>
-          <p className="mt-2 text-center text-sm text-slate-400">
-            {subtitle}
-          </p>
-
-          <div className="mt-8">{children}</div>
-        </div>
+        <AuthCard title={title} subtitle={subtitle}>
+          {children}
+        </AuthCard>
       </div>
     </div>
   );

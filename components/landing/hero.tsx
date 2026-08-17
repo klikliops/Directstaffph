@@ -1,69 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import {
-  ArrowRight,
-  Briefcase,
-  CheckCircle2,
-  ShieldCheck,
-  UserRound,
-  Wallet,
-  Zap,
-} from "lucide-react";
-import { SearchFilterBar } from "./search-filter-bar";
+import { Search, ShieldCheck, UserRound, Wallet, Zap } from "lucide-react";
+import { PickerCard } from "@/components/shared/picker-card";
+import { Modal } from "@/components/ui/modal";
+import { AuthCard } from "@/components/auth/auth-card";
+import { SignupForm } from "@/components/auth/signup-form";
 
-type Persona = "employer" | "talent";
-
-const PERSONA_CONTENT: Record<
-  Persona,
-  {
-    eyebrow: string;
-    headlineLead: string;
-    headlineHighlight: string;
-    body: string;
-    primaryCta: { label: string; href: string };
-    secondaryCta: { label: string; href: string };
-    trustBadges: { icon: typeof ShieldCheck; label: string }[];
-  }
-> = {
-  employer: {
-    eyebrow: "Now onboarding EA, video editing & e-commerce ops talent",
-    headlineLead: "Hire top-tier Filipino talent,",
-    headlineHighlight: "direct — no markup.",
-    body: "Verified Executive Assistants, Video Editors, E-commerce Ops, Bookkeepers, and Media Buyers — ready to work, paid directly.",
-    primaryCta: { label: "Browse Talent", href: "#talent" },
-    secondaryCta: { label: "Post a Job", href: "#pricing" },
-    trustBadges: [
-      { icon: ShieldCheck, label: "ID-verified specialists" },
-      { icon: Wallet, label: "Direct Wise payments" },
-      { icon: Zap, label: "0% placement commission" },
-    ],
-  },
-  talent: {
-    eyebrow: "500+ Filipino specialists hired directly",
-    headlineLead: "Get hired directly abroad,",
-    headlineHighlight: "keep 100% of your pay.",
-    body: "Build a free profile with your skills and a video intro, and get discovered by employers in the US, UK, AU, and EU.",
-    primaryCta: { label: "Create Your Profile", href: "/signup?role=jobseeker" },
-    secondaryCta: { label: "See How It Works", href: "#value" },
-    trustBadges: [
-      { icon: ShieldCheck, label: "Free, verified profile" },
-      { icon: Wallet, label: "Paid directly via Wise" },
-      { icon: Zap, label: "You keep 100% of your rate" },
-    ],
-  },
-};
-
-const TALENT_HIGHLIGHTS = [
-  "List your software skills and get matched to relevant roles",
-  "Add a short video intro so employers see the real you",
-  "Get paid directly — no agency ever touches your rate",
+const TRUST_BADGES = [
+  { icon: ShieldCheck, label: "ID-verified specialists" },
+  { icon: Wallet, label: "Direct Wise payments" },
+  { icon: Zap, label: "0% agency markup" },
 ];
 
 export function Hero() {
-  const [persona, setPersona] = useState<Persona>("employer");
-  const content = PERSONA_CONTENT[persona];
+  const [showSignup, setShowSignup] = useState(false);
 
   return (
     <section className="relative overflow-hidden bg-brand-navy pb-24 pt-16 sm:pt-24">
@@ -74,58 +25,22 @@ export function Hero() {
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
-          <div
-            role="tablist"
-            aria-label="I am a..."
-            className="mx-auto inline-flex rounded-full border border-white/10 bg-white/5 p-1"
-          >
-            <PersonaTab
-              icon={Briefcase}
-              label="I'm Hiring"
-              isActive={persona === "employer"}
-              onClick={() => setPersona("employer")}
-            />
-            <PersonaTab
-              icon={UserRound}
-              label="I'm Looking for Work"
-              isActive={persona === "talent"}
-              onClick={() => setPersona("talent")}
-            />
-          </div>
-
-          <p className="mt-8 text-xs font-semibold uppercase tracking-wider text-cyan-400">
-            {content.eyebrow}
+          <p className="text-xs font-semibold uppercase tracking-wider text-cyan-400">
+            The direct-hire marketplace for Filipino remote talent
           </p>
 
           <h1 className="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-            <span className="block">{content.headlineLead}</span>
-            <span className="block text-brand-accent">
-              {content.headlineHighlight}
-            </span>
+            <span className="block">Hire top-tier talent,</span>
+            <span className="block text-brand-accent">direct — no markup.</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-lg leading-7 text-slate-300">
-            {content.body}
+            Verified specialists ready to work, paid directly — or get hired
+            directly and keep 100% of your pay. Pick how you&rsquo;re joining.
           </p>
 
-          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link
-              href={content.primaryCta.href}
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-brand-accent px-6 py-3 text-sm font-semibold text-brand-navy transition-colors hover:bg-cyan-300 sm:w-auto"
-            >
-              {content.primaryCta.label}
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href={content.secondaryCta.href}
-              className="w-full rounded-full border border-white/20 px-6 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-white/10 sm:w-auto"
-            >
-              {content.secondaryCta.label}
-            </Link>
-          </div>
-
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-            {content.trustBadges.map(({ icon: Icon, label }) => (
+            {TRUST_BADGES.map(({ icon: Icon, label }) => (
               <div
                 key={label}
                 className="flex items-center gap-2 text-sm text-slate-400"
@@ -137,76 +52,30 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="mx-auto mt-12 max-w-4xl">
-          {persona === "employer" ? (
-            <SearchFilterBar />
-          ) : (
-            <TalentCtaPanel />
-          )}
+        <div className="mx-auto mt-12 grid max-w-2xl grid-cols-1 gap-6 sm:grid-cols-2">
+          <PickerCard
+            href="#talent"
+            icon={Search}
+            title="Find Talent"
+            subtitle="Browse & hire specialists"
+          />
+          <PickerCard
+            onClick={() => setShowSignup(true)}
+            icon={UserRound}
+            title="Find a Job"
+            subtitle="Create your free profile"
+          />
         </div>
       </div>
-    </section>
-  );
-}
 
-function PersonaTab({
-  icon: Icon,
-  label,
-  isActive,
-  onClick,
-}: {
-  icon: typeof Briefcase;
-  label: string;
-  isActive: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      role="tab"
-      aria-selected={isActive}
-      onClick={onClick}
-      className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-        isActive
-          ? "bg-brand-accent text-brand-navy"
-          : "text-slate-300 hover:text-white"
-      }`}
-    >
-      <Icon className="h-4 w-4" />
-      {label}
-    </button>
-  );
-}
-
-function TalentCtaPanel() {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/20 backdrop-blur sm:p-8">
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-lg font-semibold text-white">
-            Ready to get discovered?
-          </h2>
-          <ul className="mt-4 space-y-2.5">
-            {TALENT_HIGHLIGHTS.map((highlight) => (
-              <li
-                key={highlight}
-                className="flex items-start gap-2 text-sm text-slate-300"
-              >
-                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-accent" />
-                {highlight}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <Link
-          href="/signup?role=jobseeker"
-          className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-brand-accent px-6 py-3 text-sm font-semibold text-brand-navy transition-colors hover:bg-cyan-300"
+      <Modal open={showSignup} onClose={() => setShowSignup(false)}>
+        <AuthCard
+          title="Create your free profile"
+          subtitle="Free to join. No commitment, no credit card."
         >
-          Create Your Free Profile
-          <ArrowRight className="h-4 w-4" />
-        </Link>
-      </div>
-    </div>
+          <SignupForm initialRole="jobseeker" showRoleToggle={false} />
+        </AuthCard>
+      </Modal>
+    </section>
   );
 }

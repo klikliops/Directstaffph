@@ -6,7 +6,13 @@ import Link from "next/link";
 import { Briefcase, UserRound } from "lucide-react";
 import { registerUser, type UserRole } from "@/lib/local-auth";
 
-export function SignupForm({ initialRole }: { initialRole: UserRole }) {
+export function SignupForm({
+  initialRole,
+  showRoleToggle = true,
+}: {
+  initialRole: UserRole;
+  showRoleToggle?: boolean;
+}) {
   const router = useRouter();
   const [role, setRole] = useState<UserRole>(initialRole);
   const [username, setUsername] = useState("");
@@ -56,24 +62,26 @@ export function SignupForm({ initialRole }: { initialRole: UserRole }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      <div
-        role="tablist"
-        aria-label="Sign up as..."
-        className="flex rounded-full border border-white/10 bg-brand-navy p-1"
-      >
-        <RoleTab
-          icon={Briefcase}
-          label="Employer"
-          isActive={role === "employer"}
-          onClick={() => setRole("employer")}
-        />
-        <RoleTab
-          icon={UserRound}
-          label="Jobseeker"
-          isActive={role === "jobseeker"}
-          onClick={() => setRole("jobseeker")}
-        />
-      </div>
+      {showRoleToggle && (
+        <div
+          role="tablist"
+          aria-label="Sign up as..."
+          className="flex rounded-full border border-white/10 bg-brand-navy p-1"
+        >
+          <RoleTab
+            icon={Briefcase}
+            label="Employer"
+            isActive={role === "employer"}
+            onClick={() => setRole("employer")}
+          />
+          <RoleTab
+            icon={UserRound}
+            label="Jobseeker"
+            isActive={role === "jobseeker"}
+            onClick={() => setRole("jobseeker")}
+          />
+        </div>
+      )}
 
       <Field label="Username">
         <input

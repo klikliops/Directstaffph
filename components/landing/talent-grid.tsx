@@ -1,5 +1,6 @@
 import { MOCK_CANDIDATES } from "@/lib/mock-data";
 import { CandidateCard } from "./candidate-card";
+import { SearchFilterBar } from "./search-filter-bar";
 
 export function TalentGrid() {
   return (
@@ -16,7 +17,11 @@ export function TalentGrid() {
           </p>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto mt-10 max-w-4xl">
+          <SearchFilterBar />
+        </div>
+
+        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {MOCK_CANDIDATES.map((candidate) => (
             <CandidateCard key={candidate.id} candidate={candidate} />
           ))}
