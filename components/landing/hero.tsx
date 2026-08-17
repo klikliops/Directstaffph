@@ -30,7 +30,7 @@ const PERSONA_CONTENT: Record<
   employer: {
     eyebrow: "Now onboarding EA, video editing & e-commerce ops talent",
     headlineLead: "Hire top-tier Filipino talent,",
-    headlineHighlight: "direct — no agency markup.",
+    headlineHighlight: "direct — no markup.",
     body: "Verified Executive Assistants, Video Editors, E-commerce Ops, Bookkeepers, and Media Buyers — ready to work, paid directly.",
     primaryCta: { label: "Browse Talent", href: "#talent" },
     secondaryCta: { label: "Post a Job", href: "#pricing" },
@@ -42,7 +42,7 @@ const PERSONA_CONTENT: Record<
   },
   talent: {
     eyebrow: "500+ Filipino specialists hired directly",
-    headlineLead: "Get hired directly by employers abroad,",
+    headlineLead: "Get hired directly abroad,",
     headlineHighlight: "keep 100% of your pay.",
     body: "Build a free profile with your skills and a video intro, and get discovered by employers in the US, UK, AU, and EU.",
     primaryCta: { label: "Create Your Profile", href: "/signup?role=jobseeker" },
