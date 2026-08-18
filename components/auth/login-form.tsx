@@ -31,7 +31,9 @@ export function LoginForm() {
     }
 
     router.push(
-      result.user.role === "jobseeker" ? "/jobseeker/dashboard" : "/#talent"
+      result.user.role === "jobseeker"
+        ? "/jobseeker/dashboard"
+        : "/employer/dashboard"
     );
   }
 

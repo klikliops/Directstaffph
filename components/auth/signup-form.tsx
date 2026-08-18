@@ -60,7 +60,9 @@ export function SignupForm({
     }
 
     onSuccess?.();
-    router.push(role === "jobseeker" ? "/jobseeker/dashboard" : "/#talent");
+    router.push(
+      role === "jobseeker" ? "/jobseeker/dashboard" : "/employer/dashboard"
+    );
   }
 
   return (

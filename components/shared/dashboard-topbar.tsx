@@ -6,7 +6,7 @@ import { LogOut } from "lucide-react";
 import { clearSession } from "@/lib/local-auth";
 import { Logo } from "@/components/shared/logo-mark";
 
-export function JobseekerTopbar({ username }: { username: string | null }) {
+export function DashboardTopbar({ username }: { username: string | null }) {
   const router = useRouter();
 
   function handleLogout() {
@@ -18,7 +18,7 @@ export function JobseekerTopbar({ username }: { username: string | null }) {
     <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
-          <Logo gradientId="topbar-logo" className="h-8 w-auto" />
+          <Logo gradientId="dashboard-topbar-logo" className="h-8 w-auto" />
           <span className="text-lg font-semibold tracking-tight text-brand-navy">
             DirectStaff<span className="text-brand-accent-dark">PH</span>
           </span>
