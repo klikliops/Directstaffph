@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getSession, type MockUser } from "@/lib/local-auth";
+import { getDisplayName, getSession, type MockUser } from "@/lib/local-auth";
 import { PointsBanner } from "@/components/jobseeker/points-banner";
 import { RecommendedJobs } from "@/components/jobseeker/recommended-jobs";
 
@@ -32,7 +32,7 @@ export default function JobseekerDashboardPage() {
       )}
 
       <h1 className="text-2xl font-bold text-brand-navy sm:text-3xl">
-        Welcome{session?.fullName ? `, ${session.fullName}` : session ? `, ${session.username}` : ""}
+        Welcome{session ? `, ${getDisplayName(session)}` : ""}
       </h1>
       <p className="mt-1 text-slate-600">
         Here&rsquo;s what&rsquo;s happening with your profile.

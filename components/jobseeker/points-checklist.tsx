@@ -29,7 +29,7 @@ export function PointsChecklist({
   function handleResumeChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
-    const updated = updateProfile(session.username, {
+    const updated = updateProfile(session.email, {
       resumeSubmitted: true,
       resumeFileName: file.name,
     });
@@ -37,7 +37,7 @@ export function PointsChecklist({
   }
 
   function handlePickAvatar(swatch: { from: string; to: string }) {
-    const updated = updateProfile(session.username, {
+    const updated = updateProfile(session.email, {
       profilePictureSet: true,
       avatarColorFrom: swatch.from,
       avatarColorTo: swatch.to,

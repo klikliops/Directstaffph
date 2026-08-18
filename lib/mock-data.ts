@@ -1,9 +1,4 @@
-import type {
-  CandidateProfile,
-  JobPosting,
-  NotificationItem,
-  PricingPlan,
-} from "./types";
+import type { CandidateProfile, JobPosting, PricingPlan } from "./types";
 
 // Placeholder data for local development. Replace with Supabase queries once
 // the `candidates` table is live — see the README for the suggested schema.
@@ -200,27 +195,6 @@ export const MOCK_JOBS: JobPosting[] = [
     applicantCount: 8,
     description:
       "Handle monthly close, AR/AP, and payroll across a portfolio of small agency clients.",
-  },
-];
-
-export const MOCK_NOTIFICATIONS: NotificationItem[] = [
-  {
-    id: "n1",
-    title: "Your profile was viewed",
-    message: "Northbound Apparel Co. viewed your profile.",
-    timeAgo: "2h ago",
-  },
-  {
-    id: "n2",
-    title: "New role matches your interest",
-    message: "Executive Assistant to CEO at Harbor & Vale Consulting was just posted.",
-    timeAgo: "5h ago",
-  },
-  {
-    id: "n3",
-    title: "Complete your profile",
-    message: "Add a video intro to stand out to employers.",
-    timeAgo: "1d ago",
   },
 ];
 

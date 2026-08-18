@@ -1,15 +1,15 @@
 import { Briefcase, Eye, Unlock } from "lucide-react";
 
-const STATS = [
-  { icon: Eye, label: "Candidates Viewed", value: 0 },
-  { icon: Unlock, label: "Profiles Unlocked", value: 0 },
-  { icon: Briefcase, label: "Active Job Posts", value: 0 },
-];
+export function StatsRow({ activeJobPosts = 0 }: { activeJobPosts?: number }) {
+  const stats = [
+    { icon: Eye, label: "Candidates Viewed", value: 0 },
+    { icon: Unlock, label: "Profiles Unlocked", value: 0 },
+    { icon: Briefcase, label: "Active Job Posts", value: activeJobPosts },
+  ];
 
-export function StatsRow() {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-      {STATS.map(({ icon: Icon, label, value }) => (
+      {stats.map(({ icon: Icon, label, value }) => (
         <div
           key={label}
           className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5"

@@ -7,7 +7,7 @@ import { loginUser } from "@/lib/local-auth";
 
 export function LoginForm() {
   const router = useRouter();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,13 +16,13 @@ export function LoginForm() {
     event.preventDefault();
     setError(null);
 
-    if (!username.trim() || !password) {
-      setError("Enter your username and password.");
+    if (!email.trim() || !password) {
+      setError("Enter your email and password.");
       return;
     }
 
     setIsSubmitting(true);
-    const result = loginUser(username.trim(), password);
+    const result = loginUser(email.trim(), password);
 
     if (!result.ok) {
       setIsSubmitting(false);
@@ -41,14 +41,14 @@ export function LoginForm() {
     <form onSubmit={handleSubmit} className="space-y-5">
       <label className="block">
         <span className="mb-1.5 block text-sm font-medium text-slate-300">
-          Username
+          Email
         </span>
         <input
-          type="text"
-          autoComplete="username"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
-          placeholder="e.g. maria.santos"
+          type="email"
+          autoComplete="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="e.g. maria.santos@email.com"
           className={inputClasses}
         />
       </label>

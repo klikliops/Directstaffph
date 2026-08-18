@@ -78,13 +78,7 @@ export interface JobPosting {
   postedAt: string; // ISO date
   applicantCount: number;
   description: string;
-}
-
-export interface NotificationItem {
-  id: string;
-  title: string;
-  message: string;
-  timeAgo: string;
+  postedByEmail?: string; // employer account that created this posting (undefined for seed/mock listings)
 }
 
 export type PricingPlanId = "free" | "business" | "agency";

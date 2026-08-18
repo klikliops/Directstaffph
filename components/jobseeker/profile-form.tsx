@@ -11,14 +11,16 @@ export function ProfileForm({
   session: MockUser;
   onUpdate: (user: MockUser) => void;
 }) {
-  const [fullName, setFullName] = useState(session.fullName ?? "");
+  const [firstName, setFirstName] = useState(session.firstName ?? "");
+  const [lastName, setLastName] = useState(session.lastName ?? "");
   const [jobInterest, setJobInterest] = useState(session.jobInterest ?? "");
   const [saved, setSaved] = useState(false);
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    const updated = updateProfile(session.username, {
-      fullName: fullName.trim() || undefined,
+    const updated = updateProfile(session.email, {
+      firstName: firstName.trim() || undefined,
+      lastName: lastName.trim() || undefined,
       jobInterest: jobInterest || undefined,
     });
     if (updated) {
@@ -43,35 +45,48 @@ export function ProfileForm({
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-slate-600">
-            Full Name
+            First Name
           </span>
           <input
             type="text"
-            value={fullName}
-            onChange={(event) => setFullName(event.target.value)}
-            placeholder="e.g. Maria Santos"
+            value={firstName}
+            onChange={(event) => setFirstName(event.target.value)}
+            placeholder="Maria"
             className={inputClasses}
           />
         </label>
 
         <label className="block">
           <span className="mb-1.5 block text-sm font-medium text-slate-600">
-            Job Interest / Role
+            Last Name
           </span>
-          <select
-            value={jobInterest}
-            onChange={(event) => setJobInterest(event.target.value)}
+          <input
+            type="text"
+            value={lastName}
+            onChange={(event) => setLastName(event.target.value)}
+            placeholder="Santos"
             className={inputClasses}
-          >
-            <option value="">Select a role</option>
-            {CANDIDATE_CATEGORIES.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
+          />
         </label>
       </div>
+
+      <label className="mt-4 block">
+        <span className="mb-1.5 block text-sm font-medium text-slate-600">
+          Job Interest / Role
+        </span>
+        <select
+          value={jobInterest}
+          onChange={(event) => setJobInterest(event.target.value)}
+          className={inputClasses}
+        >
+          <option value="">Select a role</option>
+          {CANDIDATE_CATEGORIES.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+      </label>
 
       <div className="mt-5 flex items-center gap-3">
         <button

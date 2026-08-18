@@ -2,16 +2,37 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Bell } from "lucide-react";
-import { MOCK_NOTIFICATIONS } from "@/lib/mock-data";
+import {
+  getNotificationsFor,
+  markAllRead,
+  NOTIFICATIONS_CHANGE_EVENT,
+  type UserNotification,
+} from "@/lib/notifications-store";
 
-export function NotificationsBell() {
+function timeAgo(iso: string): string {
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const minutes = Math.floor(diffMs / 60000);
+  if (minutes < 1) return "just now";
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
+
+export function NotificationsBell({ email }: { email: string | null }) {
   const [open, setOpen] = useState(false);
-  const [readIds, setReadIds] = useState<Set<string>>(new Set());
+  const [notifications, setNotifications] = useState<UserNotification[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const unreadCount = MOCK_NOTIFICATIONS.filter(
-    (item) => !readIds.has(item.id)
-  ).length;
+  useEffect(() => {
+    function refresh() {
+      if (email) setNotifications(getNotificationsFor(email));
+    }
+    refresh();
+    window.addEventListener(NOTIFICATIONS_CHANGE_EVENT, refresh);
+    return () => window.removeEventListener(NOTIFICATIONS_CHANGE_EVENT, refresh);
+  }, [email]);
 
   useEffect(() => {
     if (!open) return;
@@ -27,15 +48,17 @@ export function NotificationsBell() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [open]);
 
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
   function handleToggle() {
     setOpen((prev) => {
       const next = !prev;
-      if (next) {
-        setReadIds(new Set(MOCK_NOTIFICATIONS.map((item) => item.id)));
-      }
+      if (next && email) markAllRead(email);
       return next;
     });
   }
+
+  if (!email) return null;
 
   return (
     <div ref={containerRef} className="relative">
@@ -57,7 +80,12 @@ export function NotificationsBell() {
             Notifications
           </p>
           <div className="max-h-80 overflow-y-auto">
-            {MOCK_NOTIFICATIONS.map((item) => (
+            {notifications.length === 0 && (
+              <p className="px-3 py-4 text-center text-sm text-slate-400">
+                No notifications yet.
+              </p>
+            )}
+            {notifications.map((item) => (
               <div
                 key={item.id}
                 className="rounded-xl px-3 py-2.5 transition-colors hover:bg-slate-50"
@@ -66,7 +94,9 @@ export function NotificationsBell() {
                   {item.title}
                 </p>
                 <p className="mt-0.5 text-sm text-slate-500">{item.message}</p>
-                <p className="mt-1 text-xs text-slate-400">{item.timeAgo}</p>
+                <p className="mt-1 text-xs text-slate-400">
+                  {timeAgo(item.createdAt)}
+                </p>
               </div>
             ))}
           </div>

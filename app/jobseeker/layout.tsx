@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getSession, type MockUser } from "@/lib/local-auth";
+import { getDisplayName, getSession, type MockUser } from "@/lib/local-auth";
 import { JobseekerSidebar } from "@/components/jobseeker/sidebar";
 import { DashboardTopbar } from "@/components/shared/dashboard-topbar";
 
@@ -22,7 +22,7 @@ export default function JobseekerLayout({
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="md:hidden">
           <DashboardTopbar
-            username={session?.username ?? null}
+            displayName={session ? getDisplayName(session) : null}
             isVip={session?.isVip}
           />
         </div>

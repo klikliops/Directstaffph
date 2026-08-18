@@ -8,11 +8,16 @@ import { clearAdminSession, hasAdminSession } from "@/lib/admin-auth";
 import { PasscodeGate } from "@/components/admin/passcode-gate";
 import { StatsCards } from "@/components/admin/stats-cards";
 import { UsersTable } from "@/components/admin/users-table";
+import { ChangePasswordForm } from "@/components/admin/change-password-form";
+import { BroadcastEmailForm } from "@/components/admin/broadcast-email-form";
+
+type Tab = "accounts" | "settings";
 
 export default function AdminPage() {
   const [unlocked, setUnlocked] = useState(false);
   const [checkedGate, setCheckedGate] = useState(false);
   const [users, setUsers] = useState<MockUser[]>([]);
+  const [tab, setTab] = useState<Tab>("accounts");
 
   useEffect(() => {
     setUnlocked(hasAdminSession());
@@ -63,16 +68,48 @@ export default function AdminPage() {
           Admin Dashboard
         </h1>
         <p className="mt-1 text-slate-600">
-          Monitor accounts and manage VIP status.
+          Monitor accounts, manage VIP status, and site settings.
         </p>
 
-        <div className="mt-8">
-          <StatsCards users={users} />
+        <div className="mt-6 flex gap-2 border-b border-slate-200">
+          {(
+            [
+              { id: "accounts", label: "Accounts" },
+              { id: "settings", label: "Settings" },
+            ] as { id: Tab; label: string }[]
+          ).map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => setTab(item.id)}
+              className={`border-b-2 px-1 pb-3 text-sm font-medium transition-colors ${
+                tab === item.id
+                  ? "border-brand-accent text-brand-navy"
+                  : "border-transparent text-slate-500 hover:text-brand-navy"
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
         </div>
 
-        <div className="mt-6">
-          <UsersTable users={users} onChange={setUsers} />
-        </div>
+        {tab === "accounts" && (
+          <>
+            <div className="mt-6">
+              <StatsCards users={users} />
+            </div>
+            <div className="mt-6">
+              <UsersTable users={users} onChange={setUsers} />
+            </div>
+          </>
+        )}
+
+        {tab === "settings" && (
+          <div className="mt-6 space-y-6">
+            <ChangePasswordForm />
+            <BroadcastEmailForm users={users} />
+          </div>
+        )}
       </main>
     </div>
   );

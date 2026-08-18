@@ -10,21 +10,15 @@ export interface PointTask {
 export const JOBSEEKER_POINT_TASKS: PointTask[] = [
   { key: "account", label: "Create your account", points: 10, done: () => true },
   {
-    key: "mobile",
-    label: "Add your mobile number",
-    points: 10,
-    done: (user) => Boolean(user.mobileNumber),
-  },
-  {
     key: "fullName",
     label: "Add your full name",
-    points: 15,
-    done: (user) => Boolean(user.fullName),
+    points: 20,
+    done: (user) => Boolean(user.firstName) && Boolean(user.lastName),
   },
   {
     key: "jobInterest",
     label: "Select a job interest",
-    points: 15,
+    points: 20,
     done: (user) => Boolean(user.jobInterest),
   },
   {

@@ -6,6 +6,8 @@ import Link from "next/link";
 import { Briefcase, UserRound } from "lucide-react";
 import { registerUser, type UserRole } from "@/lib/local-auth";
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function SignupForm({
   initialRole,
   showRoleToggle = true,
@@ -17,10 +19,11 @@ export function SignupForm({
 }) {
   const router = useRouter();
   const [role, setRole] = useState<UserRole>(initialRole);
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [mobileNumber, setMobileNumber] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -28,8 +31,16 @@ export function SignupForm({
     event.preventDefault();
     setError(null);
 
-    if (username.trim().length < 3) {
-      setError("Username must be at least 3 characters.");
+    if (!EMAIL_PATTERN.test(email.trim())) {
+      setError("Enter a valid email address.");
+      return;
+    }
+    if (!firstName.trim()) {
+      setError("Enter your first name.");
+      return;
+    }
+    if (!lastName.trim()) {
+      setError("Enter your last name.");
       return;
     }
     if (password.length < 8) {
@@ -40,17 +51,14 @@ export function SignupForm({
       setError("Passwords do not match.");
       return;
     }
-    if (role === "jobseeker" && mobileNumber.trim().length < 7) {
-      setError("Enter a valid mobile number.");
-      return;
-    }
 
     setIsSubmitting(true);
     const result = registerUser({
-      username: username.trim(),
+      email: email.trim(),
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
       password,
       role,
-      mobileNumber: role === "jobseeker" ? mobileNumber.trim() : undefined,
     });
 
     if (!result.ok) {
@@ -88,16 +96,40 @@ export function SignupForm({
         </div>
       )}
 
-      <Field label="Username">
+      <Field label="Email">
         <input
-          type="text"
-          autoComplete="username"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
-          placeholder="e.g. maria.santos"
+          type="email"
+          autoComplete="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="e.g. maria.santos@email.com"
           className={inputClasses}
         />
       </Field>
+
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <Field label="First Name">
+          <input
+            type="text"
+            autoComplete="given-name"
+            value={firstName}
+            onChange={(event) => setFirstName(event.target.value)}
+            placeholder="Maria"
+            className={inputClasses}
+          />
+        </Field>
+
+        <Field label="Last Name">
+          <input
+            type="text"
+            autoComplete="family-name"
+            value={lastName}
+            onChange={(event) => setLastName(event.target.value)}
+            placeholder="Santos"
+            className={inputClasses}
+          />
+        </Field>
+      </div>
 
       <Field label="Create Password">
         <input
@@ -120,19 +152,6 @@ export function SignupForm({
           className={inputClasses}
         />
       </Field>
-
-      {role === "jobseeker" && (
-        <Field label="Mobile Number">
-          <input
-            type="tel"
-            autoComplete="tel"
-            value={mobileNumber}
-            onChange={(event) => setMobileNumber(event.target.value)}
-            placeholder="+63 9XX XXX XXXX"
-            className={inputClasses}
-          />
-        </Field>
-      )}
 
       {error && (
         <p className="rounded-lg border border-red-400/20 bg-red-400/10 px-3 py-2 text-sm text-red-300">

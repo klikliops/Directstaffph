@@ -5,12 +5,15 @@ import { useRouter } from "next/navigation";
 import { Crown, LogOut } from "lucide-react";
 import { clearSession } from "@/lib/local-auth";
 import { Logo } from "@/components/shared/logo-mark";
+import { NotificationsBell } from "@/components/shared/notifications-bell";
 
 export function DashboardTopbar({
-  username,
+  displayName,
+  email = null,
   isVip = false,
 }: {
-  username: string | null;
+  displayName: string | null;
+  email?: string | null;
   isVip?: boolean;
 }) {
   const router = useRouter();
@@ -30,10 +33,10 @@ export function DashboardTopbar({
           </span>
         </Link>
 
-        <div className="flex items-center gap-4">
-          {username && (
+        <div className="flex items-center gap-3">
+          {displayName && (
             <span className="hidden items-center gap-1.5 text-sm font-medium text-slate-600 sm:flex">
-              {username}
+              {displayName}
               {isVip && (
                 <Crown
                   className="h-3.5 w-3.5 text-amber-500"
@@ -42,6 +45,7 @@ export function DashboardTopbar({
               )}
             </span>
           )}
+          <NotificationsBell email={email} />
           <button
             type="button"
             onClick={handleLogout}

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Crown, Search, Trash2 } from "lucide-react";
 import {
   deleteUserAccount,
+  getDisplayName,
   setVipStatus,
   type MockUser,
   type UserRole,
@@ -36,25 +37,25 @@ export function UsersTable({
       const matchesRole = roleFilter === "all" || user.role === roleFilter;
       const matchesQuery =
         !q ||
-        user.username.toLowerCase().includes(q) ||
-        (user.fullName ?? "").toLowerCase().includes(q);
+        user.email.toLowerCase().includes(q) ||
+        getDisplayName(user).toLowerCase().includes(q);
       return matchesRole && matchesQuery;
     });
   }, [users, query, roleFilter]);
 
-  function handleToggleVip(username: string, current: boolean) {
-    setVipStatus(username, !current);
+  function handleToggleVip(email: string, current: boolean) {
+    setVipStatus(email, !current);
     onChange(
-      users.map((u) => (u.username === username ? { ...u, isVip: !current } : u))
+      users.map((u) => (u.email === email ? { ...u, isVip: !current } : u))
     );
   }
 
-  function handleDelete(username: string) {
-    if (!window.confirm(`Delete account "${username}"? This can't be undone.`)) {
+  function handleDelete(email: string) {
+    if (!window.confirm(`Delete account "${email}"? This can't be undone.`)) {
       return;
     }
-    deleteUserAccount(username);
-    onChange(users.filter((u) => u.username !== username));
+    deleteUserAccount(email);
+    onChange(users.filter((u) => u.email !== email));
   }
 
   return (
@@ -69,7 +70,7 @@ export function UsersTable({
               type="text"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search username or name"
+              placeholder="Search email or name"
               className="w-48 bg-transparent text-sm text-brand-navy placeholder:text-slate-400 focus:outline-none"
             />
           </div>
@@ -97,7 +98,7 @@ export function UsersTable({
         <table className="w-full min-w-[640px] text-left text-sm">
           <thead>
             <tr className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400">
-              <th className="py-2 pr-4 font-medium">Username</th>
+              <th className="py-2 pr-4 font-medium">Email</th>
               <th className="py-2 pr-4 font-medium">Role</th>
               <th className="py-2 pr-4 font-medium">Job Interest</th>
               <th className="py-2 pr-4 font-medium">Joined</th>
@@ -114,56 +115,58 @@ export function UsersTable({
               </tr>
             )}
 
-            {filteredUsers.map((user) => (
-              <tr key={user.username} className="border-b border-slate-50">
-                <td className="py-3 pr-4">
-                  <p className="font-medium text-brand-navy">
-                    {user.fullName || user.username}
-                  </p>
-                  {user.fullName && (
-                    <p className="text-xs text-slate-400">{user.username}</p>
-                  )}
-                </td>
-                <td className="py-3 pr-4 capitalize text-slate-600">{user.role}</td>
-                <td className="py-3 pr-4 text-slate-600">
-                  {user.jobInterest ?? "—"}
-                </td>
-                <td className="py-3 pr-4 text-slate-500">
-                  {formatDate(user.createdAt)}
-                </td>
-                <td className="py-3 pr-4">
-                  {user.isVip && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-600">
-                      <Crown className="h-3 w-3" />
-                      VIP
-                    </span>
-                  )}
-                </td>
-                <td className="py-3 pr-0 text-right">
-                  <div className="flex justify-end gap-2">
-                    <button
-                      type="button"
-                      onClick={() => handleToggleVip(user.username, Boolean(user.isVip))}
-                      className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
-                        user.isVip
-                          ? "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                          : "bg-amber-50 text-amber-600 hover:bg-amber-100"
-                      }`}
-                    >
-                      {user.isVip ? "Revoke VIP" : "Grant VIP"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(user.username)}
-                      aria-label={`Delete ${user.username}`}
-                      className="flex h-7 w-7 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {filteredUsers.map((user) => {
+              const displayName = getDisplayName(user);
+              const hasName = displayName !== user.email;
+              return (
+                <tr key={user.email} className="border-b border-slate-50">
+                  <td className="py-3 pr-4">
+                    <p className="font-medium text-brand-navy">{displayName}</p>
+                    {hasName && (
+                      <p className="text-xs text-slate-400">{user.email}</p>
+                    )}
+                  </td>
+                  <td className="py-3 pr-4 capitalize text-slate-600">{user.role}</td>
+                  <td className="py-3 pr-4 text-slate-600">
+                    {user.jobInterest ?? "—"}
+                  </td>
+                  <td className="py-3 pr-4 text-slate-500">
+                    {formatDate(user.createdAt)}
+                  </td>
+                  <td className="py-3 pr-4">
+                    {user.isVip && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-600">
+                        <Crown className="h-3 w-3" />
+                        VIP
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-3 pr-0 text-right">
+                    <div className="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleToggleVip(user.email, Boolean(user.isVip))}
+                        className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+                          user.isVip
+                            ? "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                            : "bg-amber-50 text-amber-600 hover:bg-amber-100"
+                        }`}
+                      >
+                        {user.isVip ? "Revoke VIP" : "Grant VIP"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(user.email)}
+                        aria-label={`Delete ${user.email}`}
+                        className="flex h-7 w-7 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

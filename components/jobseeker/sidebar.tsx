@@ -11,32 +11,39 @@ import {
   LifeBuoy,
   LogOut,
   Settings,
+  Trophy,
   UserRound,
 } from "lucide-react";
 import {
   clearSession,
+  getDisplayName as getUserDisplayName,
   getSession,
   SESSION_CHANGE_EVENT,
   type MockUser,
 } from "@/lib/local-auth";
 import { JOBSEEKER_POINT_TASKS, calculatePoints } from "@/lib/points";
 import { Logo } from "@/components/shared/logo-mark";
-import { NotificationsBell } from "@/components/jobseeker/notifications-bell";
+import { NotificationsBell } from "@/components/shared/notifications-bell";
 
 const NAV_ITEMS = [
   { href: "/jobseeker/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/jobseeker/profile", label: "My Profile", icon: UserRound },
   { href: "/jobseeker/applications", label: "Job Applications", icon: FileText },
   { href: "/jobseeker/bookmarks", label: "Bookmarked Jobs", icon: Bookmark },
+  { href: "/jobseeker/leaderboard", label: "Leaderboard", icon: Trophy },
   { href: "/jobseeker/settings", label: "Account Settings", icon: Settings },
   { href: "/jobseeker/support", label: "Support", icon: LifeBuoy },
 ];
 
-function getInitials(name?: string | null): string {
-  if (!name) return "JS";
-  const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[1][0]).toUpperCase();
+function getDisplayName(session: MockUser | null): string {
+  return getUserDisplayName(session) || "Jobseeker";
+}
+
+function getInitials(session: MockUser | null): string {
+  if (!session) return "JS";
+  const initials = `${session.firstName?.[0] ?? ""}${session.lastName?.[0] ?? ""}`;
+  if (initials) return initials.toUpperCase();
+  return session.email.slice(0, 2).toUpperCase();
 }
 
 export function JobseekerSidebar() {
@@ -71,7 +78,7 @@ export function JobseekerSidebar() {
             DirectStaff<span className="text-brand-accent-dark">PH</span>
           </span>
         </Link>
-        <NotificationsBell />
+        <NotificationsBell email={session?.email ?? null} />
       </div>
 
       <div className="mt-6 flex items-center gap-3 px-5">
@@ -82,13 +89,11 @@ export function JobseekerSidebar() {
               : "bg-slate-300"
           }`}
         >
-          {getInitials(session?.fullName || session?.username)}
+          {getInitials(session)}
         </div>
         <div className="min-w-0">
           <p className="flex items-center gap-1.5 truncate text-sm font-semibold text-brand-navy">
-            <span className="truncate">
-              {session?.fullName || session?.username || "Jobseeker"}
-            </span>
+            <span className="truncate">{getDisplayName(session)}</span>
             {session?.isVip && (
               <Crown
                 className="h-3.5 w-3.5 shrink-0 text-amber-500"

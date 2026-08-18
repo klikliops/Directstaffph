@@ -1,19 +1,29 @@
-// DEMO-ONLY mock auth. Stores accounts in the browser's localStorage,
+// DEMO-ONLY mock auth. Accounts (the "database") live in localStorage,
 // including passwords in plain text, so the signup/login flow has
 // something real to talk to before Supabase Auth is wired up.
+//
+// The *active session* -- who's currently logged in -- lives in
+// sessionStorage instead, scoped per browser tab. Using localStorage for
+// the session meant logging into a second tab as a different account
+// silently swapped the session out from under every other open tab of
+// the same origin, since they all share one localStorage.
 //
 // Do NOT ship this to production. Replace with Supabase Auth
 // (supabase.auth.signUp / signInWithPassword), which handles password
 // hashing and session tokens server-side.
 
+import { addNotification } from "./notifications-store";
+import { getJobById } from "./jobs-store";
+
 export type UserRole = "employer" | "jobseeker";
+export type RecruitmentType = "Full-time" | "Part-time";
 
 export interface MockUser {
-  username: string;
+  email: string;
   password: string;
   role: UserRole;
-  mobileNumber?: string;
-  fullName?: string;
+  firstName?: string;
+  lastName?: string;
   jobInterest?: string;
   resumeSubmitted?: boolean;
   resumeFileName?: string;
@@ -24,6 +34,12 @@ export interface MockUser {
   bookmarkedJobIds?: string[];
   isVip?: boolean;
   createdAt?: string;
+  recruitedJobId?: string;
+  recruitedJobTitle?: string;
+  recruitedEmploymentType?: RecruitmentType;
+  recruitedByEmail?: string;
+  recruitedCompanyName?: string;
+  recruitedAt?: string;
 }
 
 const USERS_KEY = "directstaffph_mock_users";
@@ -34,7 +50,10 @@ function readUsers(): MockUser[] {
   const raw = window.localStorage.getItem(USERS_KEY);
   if (!raw) return [];
   try {
-    return JSON.parse(raw) as MockUser[];
+    const parsed = JSON.parse(raw) as MockUser[];
+    // Drop any records from before the email/firstName/lastName schema
+    // change -- they won't have `.email` and would crash every lookup.
+    return parsed.filter((u) => typeof u.email === "string");
   } catch {
     return [];
   }
@@ -49,10 +68,10 @@ export function registerUser(
 ): { ok: true } | { ok: false; error: string } {
   const users = readUsers();
   const exists = users.some(
-    (u) => u.username.toLowerCase() === user.username.toLowerCase()
+    (u) => u.email.toLowerCase() === user.email.toLowerCase()
   );
   if (exists) {
-    return { ok: false, error: "That username is already taken." };
+    return { ok: false, error: "That email is already registered." };
   }
   const withTimestamp = { ...user, createdAt: new Date().toISOString() };
   writeUsers([...users, withTimestamp]);
@@ -61,15 +80,15 @@ export function registerUser(
 }
 
 export function loginUser(
-  username: string,
+  email: string,
   password: string
 ): { ok: true; user: MockUser } | { ok: false; error: string } {
   const users = readUsers();
   const match = users.find(
-    (u) => u.username.toLowerCase() === username.toLowerCase()
+    (u) => u.email.toLowerCase() === email.toLowerCase()
   );
   if (!match) {
-    return { ok: false, error: "No account found with that username." };
+    return { ok: false, error: "No account found with that email." };
   }
   if (match.password !== password) {
     return { ok: false, error: "Incorrect password." };
@@ -79,12 +98,12 @@ export function loginUser(
 }
 
 export function updateProfile(
-  username: string,
-  updates: Partial<Omit<MockUser, "username" | "password" | "role">>
+  email: string,
+  updates: Partial<Omit<MockUser, "email" | "password" | "role">>
 ): MockUser | null {
   const users = readUsers();
   const index = users.findIndex(
-    (u) => u.username.toLowerCase() === username.toLowerCase()
+    (u) => u.email.toLowerCase() === email.toLowerCase()
   );
   if (index === -1) return null;
 
@@ -94,32 +113,79 @@ export function updateProfile(
   writeUsers(nextUsers);
 
   const session = getSession();
-  if (session && session.username.toLowerCase() === username.toLowerCase()) {
+  if (session && session.email.toLowerCase() === email.toLowerCase()) {
     saveSession(updated);
   }
 
   return updated;
 }
 
-export function applyToJob(username: string, jobId: string): MockUser | null {
+export function isLockedFromApplying(user: MockUser | null): boolean {
+  return Boolean(user?.recruitedJobId) && user?.recruitedEmploymentType === "Full-time";
+}
+
+export function applyToJob(email: string, jobId: string): MockUser | null {
   const users = readUsers();
   const index = users.findIndex(
-    (u) => u.username.toLowerCase() === username.toLowerCase()
+    (u) => u.email.toLowerCase() === email.toLowerCase()
   );
   if (index === -1) return null;
 
   const current = users[index];
+  if (isLockedFromApplying(current)) return current;
   if (current.appliedJobIds?.includes(jobId)) return current;
 
-  return updateProfile(username, {
+  const updated = updateProfile(email, {
     appliedJobIds: [...(current.appliedJobIds ?? []), jobId],
   });
+
+  // Recruited part-time elsewhere? Let that employer know they're still
+  // job-hunting instead of silently letting it happen.
+  if (updated?.recruitedByEmail && updated.recruitedEmploymentType === "Part-time") {
+    const newJob = getJobById(jobId);
+    if (newJob) {
+      addNotification(
+        updated.recruitedByEmail,
+        "Your part-time hire applied elsewhere",
+        `${getDisplayName(updated)} (recruited part-time for ${updated.recruitedJobTitle}) just applied to ${newJob.title} at ${newJob.companyName}.`
+      );
+    }
+  }
+
+  return updated;
 }
 
-export function toggleBookmark(username: string, jobId: string): MockUser | null {
+export function recruitApplicant(
+  jobseekerEmail: string,
+  employerEmail: string,
+  job: { id: string; title: string; companyName: string; employmentType: RecruitmentType }
+): MockUser | null {
+  const updated = updateProfile(jobseekerEmail, {
+    recruitedJobId: job.id,
+    recruitedJobTitle: job.title,
+    recruitedEmploymentType: job.employmentType,
+    recruitedByEmail: employerEmail,
+    recruitedCompanyName: job.companyName,
+    recruitedAt: new Date().toISOString(),
+  });
+
+  if (updated) {
+    addNotification(
+      jobseekerEmail,
+      "You've been recruited!",
+      job.employmentType === "Full-time"
+        ? `${job.companyName} recruited you for ${job.title} (Full-time). You're now marked as hired and can't apply to other jobs.`
+        : `${job.companyName} recruited you for ${job.title} (Part-time). You can still apply to other jobs.`
+    );
+  }
+
+  return updated;
+}
+
+export function toggleBookmark(email: string, jobId: string): MockUser | null {
   const users = readUsers();
   const index = users.findIndex(
-    (u) => u.username.toLowerCase() === username.toLowerCase()
+    (u) => u.email.toLowerCase() === email.toLowerCase()
   );
   if (index === -1) return null;
 
@@ -129,7 +195,7 @@ export function toggleBookmark(username: string, jobId: string): MockUser | null
     ? bookmarked.filter((id) => id !== jobId)
     : [...bookmarked, jobId];
 
-  return updateProfile(username, { bookmarkedJobIds: nextBookmarked });
+  return updateProfile(email, { bookmarkedJobIds: nextBookmarked });
 }
 
 // -- Admin-only helpers --
@@ -138,20 +204,20 @@ export function getAllUsers(): MockUser[] {
   return readUsers();
 }
 
-export function setVipStatus(username: string, isVip: boolean): MockUser | null {
-  return updateProfile(username, { isVip });
+export function setVipStatus(email: string, isVip: boolean): MockUser | null {
+  return updateProfile(email, { isVip });
 }
 
-export function deleteUserAccount(username: string): boolean {
+export function deleteUserAccount(email: string): boolean {
   const users = readUsers();
   const nextUsers = users.filter(
-    (u) => u.username.toLowerCase() !== username.toLowerCase()
+    (u) => u.email.toLowerCase() !== email.toLowerCase()
   );
   if (nextUsers.length === users.length) return false;
   writeUsers(nextUsers);
 
   const session = getSession();
-  if (session && session.username.toLowerCase() === username.toLowerCase()) {
+  if (session && session.email.toLowerCase() === email.toLowerCase()) {
     clearSession();
   }
   return true;
@@ -161,16 +227,19 @@ export const SESSION_CHANGE_EVENT = "directstaffph:session-change";
 
 export function saveSession(user: MockUser) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+  window.sessionStorage.setItem(SESSION_KEY, JSON.stringify(user));
   window.dispatchEvent(new Event(SESSION_CHANGE_EVENT));
 }
 
 export function getSession(): MockUser | null {
   if (typeof window === "undefined") return null;
-  const raw = window.localStorage.getItem(SESSION_KEY);
+  const raw = window.sessionStorage.getItem(SESSION_KEY);
   if (!raw) return null;
   try {
-    return JSON.parse(raw) as MockUser;
+    const parsed = JSON.parse(raw) as MockUser;
+    // A session saved before the email/firstName/lastName schema change
+    // won't have `.email` -- treat it as logged out rather than crash.
+    return typeof parsed.email === "string" ? parsed : null;
   } catch {
     return null;
   }
@@ -178,6 +247,12 @@ export function getSession(): MockUser | null {
 
 export function clearSession() {
   if (typeof window === "undefined") return;
-  window.localStorage.removeItem(SESSION_KEY);
+  window.sessionStorage.removeItem(SESSION_KEY);
   window.dispatchEvent(new Event(SESSION_CHANGE_EVENT));
+}
+
+export function getDisplayName(user: MockUser | null): string {
+  if (!user) return "";
+  const name = [user.firstName, user.lastName].filter(Boolean).join(" ");
+  return name || user.email;
 }

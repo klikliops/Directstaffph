@@ -41,7 +41,7 @@ export default function BookmarkedJobsPage() {
 
   function handleRemove(jobId: string) {
     if (!session) return;
-    const updated = toggleBookmark(session.username, jobId);
+    const updated = toggleBookmark(session.email, jobId);
     if (updated) setSession(updated);
   }
 
