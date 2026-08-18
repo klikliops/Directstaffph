@@ -2,11 +2,17 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LogOut } from "lucide-react";
+import { Crown, LogOut } from "lucide-react";
 import { clearSession } from "@/lib/local-auth";
 import { Logo } from "@/components/shared/logo-mark";
 
-export function DashboardTopbar({ username }: { username: string | null }) {
+export function DashboardTopbar({
+  username,
+  isVip = false,
+}: {
+  username: string | null;
+  isVip?: boolean;
+}) {
   const router = useRouter();
 
   function handleLogout() {
@@ -26,8 +32,14 @@ export function DashboardTopbar({ username }: { username: string | null }) {
 
         <div className="flex items-center gap-4">
           {username && (
-            <span className="hidden text-sm font-medium text-slate-600 sm:block">
+            <span className="hidden items-center gap-1.5 text-sm font-medium text-slate-600 sm:flex">
               {username}
+              {isVip && (
+                <Crown
+                  className="h-3.5 w-3.5 text-amber-500"
+                  aria-label="VIP member"
+                />
+              )}
             </span>
           )}
           <button

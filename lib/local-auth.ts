@@ -22,6 +22,8 @@ export interface MockUser {
   avatarColorTo?: string;
   appliedJobIds?: string[];
   bookmarkedJobIds?: string[];
+  isVip?: boolean;
+  createdAt?: string;
 }
 
 const USERS_KEY = "directstaffph_mock_users";
@@ -52,8 +54,9 @@ export function registerUser(
   if (exists) {
     return { ok: false, error: "That username is already taken." };
   }
-  writeUsers([...users, user]);
-  saveSession(user);
+  const withTimestamp = { ...user, createdAt: new Date().toISOString() };
+  writeUsers([...users, withTimestamp]);
+  saveSession(withTimestamp);
   return { ok: true };
 }
 
@@ -127,6 +130,31 @@ export function toggleBookmark(username: string, jobId: string): MockUser | null
     : [...bookmarked, jobId];
 
   return updateProfile(username, { bookmarkedJobIds: nextBookmarked });
+}
+
+// -- Admin-only helpers --
+
+export function getAllUsers(): MockUser[] {
+  return readUsers();
+}
+
+export function setVipStatus(username: string, isVip: boolean): MockUser | null {
+  return updateProfile(username, { isVip });
+}
+
+export function deleteUserAccount(username: string): boolean {
+  const users = readUsers();
+  const nextUsers = users.filter(
+    (u) => u.username.toLowerCase() !== username.toLowerCase()
+  );
+  if (nextUsers.length === users.length) return false;
+  writeUsers(nextUsers);
+
+  const session = getSession();
+  if (session && session.username.toLowerCase() === username.toLowerCase()) {
+    clearSession();
+  }
+  return true;
 }
 
 export const SESSION_CHANGE_EVENT = "directstaffph:session-change";

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Bookmark,
+  Crown,
   FileText,
   LayoutDashboard,
   LifeBuoy,
@@ -84,8 +85,16 @@ export function JobseekerSidebar() {
           {getInitials(session?.fullName || session?.username)}
         </div>
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-brand-navy">
-            {session?.fullName || session?.username || "Jobseeker"}
+          <p className="flex items-center gap-1.5 truncate text-sm font-semibold text-brand-navy">
+            <span className="truncate">
+              {session?.fullName || session?.username || "Jobseeker"}
+            </span>
+            {session?.isVip && (
+              <Crown
+                className="h-3.5 w-3.5 shrink-0 text-amber-500"
+                aria-label="VIP member"
+              />
+            )}
           </p>
           <p className="text-xs text-slate-400">
             Jobseeker &middot;{" "}

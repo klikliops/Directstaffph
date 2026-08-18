@@ -23,7 +23,10 @@ export default function EmployerDashboardPage() {
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-slate-50">
-      <DashboardTopbar username={session?.username ?? null} />
+      <DashboardTopbar
+        username={session?.username ?? null}
+        isVip={session?.isVip}
+      />
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10 sm:px-6 lg:px-8">
         {!session && (

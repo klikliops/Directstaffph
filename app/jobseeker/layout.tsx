@@ -21,7 +21,10 @@ export default function JobseekerLayout({
       <JobseekerSidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="md:hidden">
-          <DashboardTopbar username={session?.username ?? null} />
+          <DashboardTopbar
+            username={session?.username ?? null}
+            isVip={session?.isVip}
+          />
         </div>
         <main className="flex-1">{children}</main>
       </div>
