@@ -2,9 +2,14 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Briefcase, Check, MapPin, Search } from "lucide-react";
+import { Bookmark, BookmarkCheck, Briefcase, Check, MapPin, Search } from "lucide-react";
 import { MOCK_JOBS } from "@/lib/mock-data";
-import { applyToJob, getSession, type MockUser } from "@/lib/local-auth";
+import {
+  applyToJob,
+  getSession,
+  toggleBookmark,
+  type MockUser,
+} from "@/lib/local-auth";
 import { SkillBadge } from "@/components/landing/skill-badge";
 
 export function RecommendedJobs() {
@@ -29,6 +34,12 @@ export function RecommendedJobs() {
   function handleApply(jobId: string) {
     if (!session) return;
     const updated = applyToJob(session.username, jobId);
+    if (updated) setSession(updated);
+  }
+
+  function handleToggleBookmark(jobId: string) {
+    if (!session) return;
+    const updated = toggleBookmark(session.username, jobId);
     if (updated) setSession(updated);
   }
 
@@ -61,6 +72,9 @@ export function RecommendedJobs() {
 
         {filteredJobs.map((job) => {
           const applied = Boolean(session?.appliedJobIds?.includes(job.id));
+          const bookmarked = Boolean(
+            session?.bookmarkedJobIds?.includes(job.id)
+          );
 
           return (
             <div
@@ -80,10 +94,32 @@ export function RecommendedJobs() {
                     {job.isRemote ? "Remote" : "On-site"}
                   </p>
                 </div>
-                <span className="text-sm font-semibold text-brand-navy">
-                  ${job.monthlySalaryMinUsd.toLocaleString()}&ndash;$
-                  {job.monthlySalaryMaxUsd.toLocaleString()}/mo
-                </span>
+                <div className="flex shrink-0 items-center gap-3">
+                  <span className="text-sm font-semibold text-brand-navy">
+                    ${job.monthlySalaryMinUsd.toLocaleString()}&ndash;$
+                    {job.monthlySalaryMaxUsd.toLocaleString()}/mo
+                  </span>
+                  {session && (
+                    <button
+                      type="button"
+                      onClick={() => handleToggleBookmark(job.id)}
+                      aria-label={
+                        bookmarked ? "Remove bookmark" : "Bookmark this job"
+                      }
+                      className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors ${
+                        bookmarked
+                          ? "text-brand-accent-dark"
+                          : "text-slate-400 hover:text-brand-navy"
+                      }`}
+                    >
+                      {bookmarked ? (
+                        <BookmarkCheck className="h-4 w-4" />
+                      ) : (
+                        <Bookmark className="h-4 w-4" />
+                      )}
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="mt-3 flex flex-wrap items-center justify-between gap-3">

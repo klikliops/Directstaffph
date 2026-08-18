@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getSession, type MockUser } from "@/lib/local-auth";
 import { ProfileForm } from "@/components/jobseeker/profile-form";
 import { PointsChecklist } from "@/components/jobseeker/points-checklist";
+import { StatsRow } from "@/components/jobseeker/stats-row";
 
 export default function JobseekerProfilePage() {
   const [session, setSession] = useState<MockUser | null>(null);
@@ -43,6 +44,7 @@ export default function JobseekerProfilePage() {
       </p>
 
       <div className="mt-8 space-y-6">
+        <StatsRow />
         <ProfileForm session={session} onUpdate={setSession} />
         <PointsChecklist session={session} onUpdate={setSession} />
       </div>

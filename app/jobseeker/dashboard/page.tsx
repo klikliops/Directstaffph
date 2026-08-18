@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getSession, type MockUser } from "@/lib/local-auth";
-import { StatsRow } from "@/components/jobseeker/stats-row";
+import { PointsBanner } from "@/components/jobseeker/points-banner";
 import { RecommendedJobs } from "@/components/jobseeker/recommended-jobs";
 
 export default function JobseekerDashboardPage() {
@@ -39,7 +39,7 @@ export default function JobseekerDashboardPage() {
       </p>
 
       <div className="mt-8">
-        <StatsRow />
+        <PointsBanner session={session} />
       </div>
 
       <div className="mt-6">

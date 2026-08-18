@@ -21,6 +21,7 @@ export interface MockUser {
   avatarColorFrom?: string;
   avatarColorTo?: string;
   appliedJobIds?: string[];
+  bookmarkedJobIds?: string[];
 }
 
 const USERS_KEY = "directstaffph_mock_users";
@@ -110,6 +111,22 @@ export function applyToJob(username: string, jobId: string): MockUser | null {
   return updateProfile(username, {
     appliedJobIds: [...(current.appliedJobIds ?? []), jobId],
   });
+}
+
+export function toggleBookmark(username: string, jobId: string): MockUser | null {
+  const users = readUsers();
+  const index = users.findIndex(
+    (u) => u.username.toLowerCase() === username.toLowerCase()
+  );
+  if (index === -1) return null;
+
+  const current = users[index];
+  const bookmarked = current.bookmarkedJobIds ?? [];
+  const nextBookmarked = bookmarked.includes(jobId)
+    ? bookmarked.filter((id) => id !== jobId)
+    : [...bookmarked, jobId];
+
+  return updateProfile(username, { bookmarkedJobIds: nextBookmarked });
 }
 
 export const SESSION_CHANGE_EVENT = "directstaffph:session-change";
