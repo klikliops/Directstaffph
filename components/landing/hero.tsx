@@ -6,6 +6,7 @@ import { PickerCard } from "@/components/shared/picker-card";
 import { Modal } from "@/components/ui/modal";
 import { AuthCard } from "@/components/auth/auth-card";
 import { SignupForm } from "@/components/auth/signup-form";
+import type { UserRole } from "@/lib/local-auth";
 
 const TRUST_BADGES = [
   { icon: ShieldCheck, label: "ID-verified specialists" },
@@ -13,8 +14,19 @@ const TRUST_BADGES = [
   { icon: Zap, label: "0% agency markup" },
 ];
 
+const SIGNUP_COPY: Record<UserRole, { title: string; subtitle: string }> = {
+  employer: {
+    title: "Create your employer account",
+    subtitle: "Free to browse & hire. No credit card required.",
+  },
+  jobseeker: {
+    title: "Create your free profile",
+    subtitle: "Free to join. No commitment, no credit card.",
+  },
+};
+
 export function Hero() {
-  const [showSignup, setShowSignup] = useState(false);
+  const [signupRole, setSignupRole] = useState<UserRole | null>(null);
 
   return (
     <section className="relative overflow-hidden bg-brand-navy pb-24 pt-16 sm:pt-24">
@@ -24,19 +36,20 @@ export function Hero() {
       />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl text-center">
+        <div className="mx-auto max-w-5xl text-center">
           <p className="text-xs font-semibold uppercase tracking-wider text-cyan-400">
-            The direct-hire marketplace for Filipino remote talent
+            The direct remote work platform
           </p>
 
           <h1 className="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-            <span className="block">Hire top-tier talent,</span>
-            <span className="block text-brand-accent">direct — no markup.</span>
+            <span className="block">Where global teams and top</span>
+            <span className="block text-brand-accent">Filipino talent connect directly.</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-lg leading-7 text-slate-300">
-            Verified specialists ready to work, paid directly — or get hired
-            directly and keep 100% of your pay. Pick how you&rsquo;re joining.
+            Employers get verified specialists with zero markup. Remote
+            professionals get direct-hire jobs and keep 100% of their
+            earnings.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
@@ -54,13 +67,13 @@ export function Hero() {
 
         <div className="mx-auto mt-12 grid max-w-2xl grid-cols-1 gap-6 sm:grid-cols-2">
           <PickerCard
-            href="#talent"
+            onClick={() => setSignupRole("employer")}
             icon={Search}
             title="Find Talent"
             subtitle="Browse & hire specialists"
           />
           <PickerCard
-            onClick={() => setShowSignup(true)}
+            onClick={() => setSignupRole("jobseeker")}
             icon={UserRound}
             title="Find a Job"
             subtitle="Create your free profile"
@@ -68,13 +81,19 @@ export function Hero() {
         </div>
       </div>
 
-      <Modal open={showSignup} onClose={() => setShowSignup(false)}>
-        <AuthCard
-          title="Create your free profile"
-          subtitle="Free to join. No commitment, no credit card."
-        >
-          <SignupForm initialRole="jobseeker" showRoleToggle={false} />
-        </AuthCard>
+      <Modal open={signupRole !== null} onClose={() => setSignupRole(null)}>
+        {signupRole && (
+          <AuthCard
+            title={SIGNUP_COPY[signupRole].title}
+            subtitle={SIGNUP_COPY[signupRole].subtitle}
+          >
+            <SignupForm
+              initialRole={signupRole}
+              showRoleToggle={false}
+              onSuccess={() => setSignupRole(null)}
+            />
+          </AuthCard>
+        )}
       </Modal>
     </section>
   );

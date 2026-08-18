@@ -7,7 +7,7 @@ export function PickerSection() {
   return (
     <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2">
       <PickerCard
-        href="/#talent"
+        href="/signup?role=employer"
         icon={Search}
         title="Find Talent"
         subtitle="Browse & hire specialists"

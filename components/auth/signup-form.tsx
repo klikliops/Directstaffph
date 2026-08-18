@@ -9,9 +9,11 @@ import { registerUser, type UserRole } from "@/lib/local-auth";
 export function SignupForm({
   initialRole,
   showRoleToggle = true,
+  onSuccess,
 }: {
   initialRole: UserRole;
   showRoleToggle?: boolean;
+  onSuccess?: () => void;
 }) {
   const router = useRouter();
   const [role, setRole] = useState<UserRole>(initialRole);
@@ -57,6 +59,7 @@ export function SignupForm({
       return;
     }
 
+    onSuccess?.();
     router.push(role === "jobseeker" ? "/jobseeker/dashboard" : "/#talent");
   }
 
