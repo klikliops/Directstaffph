@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getSession, type MockUser } from "@/lib/local-auth";
-import { PointsSummaryCard } from "@/components/jobseeker/points-summary-card";
 import { StatsRow } from "@/components/jobseeker/stats-row";
 import { RecommendedJobs } from "@/components/jobseeker/recommended-jobs";
 
@@ -43,13 +42,8 @@ export default function JobseekerDashboardPage() {
         <StatsRow />
       </div>
 
-      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5">
-        <div className="lg:col-span-2">
-          <PointsSummaryCard session={session} />
-        </div>
-        <div className="lg:col-span-3">
-          <RecommendedJobs />
-        </div>
+      <div className="mt-6">
+        <RecommendedJobs />
       </div>
     </div>
   );

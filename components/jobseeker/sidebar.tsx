@@ -18,7 +18,9 @@ import {
   SESSION_CHANGE_EVENT,
   type MockUser,
 } from "@/lib/local-auth";
+import { JOBSEEKER_POINT_TASKS, calculatePoints } from "@/lib/points";
 import { Logo } from "@/components/shared/logo-mark";
+import { NotificationsBell } from "@/components/jobseeker/notifications-bell";
 
 const NAV_ITEMS = [
   { href: "/jobseeker/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -61,13 +63,14 @@ export function JobseekerSidebar() {
 
   return (
     <aside className="hidden w-64 shrink-0 flex-col border-r border-slate-200 bg-white md:flex">
-      <div className="px-5 pt-5">
+      <div className="flex items-center justify-between px-5 pt-5">
         <Link href="/" className="flex items-center gap-2">
           <Logo gradientId="sidebar-logo" className="h-7 w-auto" />
           <span className="text-base font-semibold tracking-tight text-brand-navy">
             DirectStaff<span className="text-brand-accent-dark">PH</span>
           </span>
         </Link>
+        <NotificationsBell />
       </div>
 
       <div className="mt-6 flex items-center gap-3 px-5">
@@ -84,7 +87,12 @@ export function JobseekerSidebar() {
           <p className="truncate text-sm font-semibold text-brand-navy">
             {session?.fullName || session?.username || "Jobseeker"}
           </p>
-          <p className="text-xs text-slate-400">Jobseeker</p>
+          <p className="text-xs text-slate-400">
+            Jobseeker &middot;{" "}
+            <span className="font-semibold text-brand-accent-dark">
+              {calculatePoints(session, JOBSEEKER_POINT_TASKS)} pts
+            </span>
+          </p>
         </div>
       </div>
 

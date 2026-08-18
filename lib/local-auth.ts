@@ -20,6 +20,7 @@ export interface MockUser {
   profilePictureSet?: boolean;
   avatarColorFrom?: string;
   avatarColorTo?: string;
+  appliedJobIds?: string[];
 }
 
 const USERS_KEY = "directstaffph_mock_users";
@@ -94,6 +95,21 @@ export function updateProfile(
   }
 
   return updated;
+}
+
+export function applyToJob(username: string, jobId: string): MockUser | null {
+  const users = readUsers();
+  const index = users.findIndex(
+    (u) => u.username.toLowerCase() === username.toLowerCase()
+  );
+  if (index === -1) return null;
+
+  const current = users[index];
+  if (current.appliedJobIds?.includes(jobId)) return current;
+
+  return updateProfile(username, {
+    appliedJobIds: [...(current.appliedJobIds ?? []), jobId],
+  });
 }
 
 export const SESSION_CHANGE_EVENT = "directstaffph:session-change";

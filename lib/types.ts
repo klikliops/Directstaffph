@@ -80,6 +80,13 @@ export interface JobPosting {
   description: string;
 }
 
+export interface NotificationItem {
+  id: string;
+  title: string;
+  message: string;
+  timeAgo: string;
+}
+
 export type PricingPlanId = "free" | "business" | "agency";
 
 export interface PricingPlan {
