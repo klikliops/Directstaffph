@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Briefcase } from "lucide-react";
+import { LogoMark } from "@/components/shared/logo-mark";
 import { AuthCard } from "./auth-card";
 
 export function AuthShell({
@@ -20,9 +20,7 @@ export function AuthShell({
 
       <div className="relative w-full max-w-md">
         <Link href="/" className="mb-8 flex items-center justify-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-accent text-brand-navy">
-            <Briefcase className="h-4.5 w-4.5" strokeWidth={2.5} />
-          </span>
+          <LogoMark />
           <span className="text-lg font-semibold tracking-tight text-white">
             DirectStaff<span className="text-brand-accent">PH</span>
           </span>
