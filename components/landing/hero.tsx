@@ -1,12 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { Search, ShieldCheck, UserRound, Wallet, Zap } from "lucide-react";
 import { PickerCard } from "@/components/shared/picker-card";
-import { Modal } from "@/components/ui/modal";
-import { AuthCard } from "@/components/auth/auth-card";
-import { SignupForm } from "@/components/auth/signup-form";
-import type { UserRole } from "@/lib/local-auth";
 
 const TRUST_BADGES = [
   { icon: ShieldCheck, label: "ID-verified specialists" },
@@ -14,20 +9,7 @@ const TRUST_BADGES = [
   { icon: Zap, label: "0% agency markup" },
 ];
 
-const SIGNUP_COPY: Record<UserRole, { title: string; subtitle: string }> = {
-  employer: {
-    title: "Create your employer account",
-    subtitle: "Free to browse & hire. No credit card required.",
-  },
-  jobseeker: {
-    title: "Create your free profile",
-    subtitle: "Free to join. No commitment, no credit card.",
-  },
-};
-
 export function Hero() {
-  const [signupRole, setSignupRole] = useState<UserRole | null>(null);
-
   return (
     <section className="relative overflow-hidden bg-brand-navy pb-24 pt-16 sm:pt-24">
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -67,34 +49,19 @@ export function Hero() {
 
         <div className="mx-auto mt-12 grid max-w-2xl grid-cols-1 gap-6 sm:grid-cols-2">
           <PickerCard
-            onClick={() => setSignupRole("employer")}
+            href="/signup?role=employer"
             icon={Search}
             title="Find Talent"
             subtitle="Browse & hire specialists"
           />
           <PickerCard
-            onClick={() => setSignupRole("jobseeker")}
+            href="/signup?role=jobseeker"
             icon={UserRound}
             title="Find a Job"
             subtitle="Create your free profile"
           />
         </div>
       </div>
-
-      <Modal open={signupRole !== null} onClose={() => setSignupRole(null)}>
-        {signupRole && (
-          <AuthCard
-            title={SIGNUP_COPY[signupRole].title}
-            subtitle={SIGNUP_COPY[signupRole].subtitle}
-          >
-            <SignupForm
-              initialRole={signupRole}
-              showRoleToggle={false}
-              onSuccess={() => setSignupRole(null)}
-            />
-          </AuthCard>
-        )}
-      </Modal>
     </section>
   );
 }

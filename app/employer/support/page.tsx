@@ -1,7 +1,7 @@
 import { LifeBuoy } from "lucide-react";
 import { ComingSoon } from "@/components/shared/coming-soon";
 
-export default function SupportPage() {
+export default function EmployerSupportPage() {
   return (
     <ComingSoon
       icon={LifeBuoy}

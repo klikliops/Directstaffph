@@ -23,7 +23,9 @@ export default function JobseekerLayout({
         <div className="md:hidden">
           <DashboardTopbar
             displayName={session ? getDisplayName(session) : null}
+            email={session?.email ?? null}
             isVip={session?.isVip}
+            homeHref="/jobseeker/dashboard"
           />
         </div>
         <main className="flex-1">{children}</main>

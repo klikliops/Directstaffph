@@ -6,7 +6,7 @@ import { Briefcase, FileText, MapPin } from "lucide-react";
 import { getSession, type MockUser } from "@/lib/local-auth";
 import { MOCK_JOBS } from "@/lib/mock-data";
 import { SkillBadge } from "@/components/landing/skill-badge";
-import { ComingSoon } from "@/components/jobseeker/coming-soon";
+import { ComingSoon } from "@/components/shared/coming-soon";
 
 export default function JobApplicationsPage() {
   const [session, setSession] = useState<MockUser | null>(null);

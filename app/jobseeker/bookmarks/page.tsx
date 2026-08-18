@@ -6,7 +6,7 @@ import { Bookmark, BookmarkCheck, Briefcase, MapPin } from "lucide-react";
 import { getSession, toggleBookmark, type MockUser } from "@/lib/local-auth";
 import { MOCK_JOBS } from "@/lib/mock-data";
 import { SkillBadge } from "@/components/landing/skill-badge";
-import { ComingSoon } from "@/components/jobseeker/coming-soon";
+import { ComingSoon } from "@/components/shared/coming-soon";
 
 export default function BookmarkedJobsPage() {
   const [session, setSession] = useState<MockUser | null>(null);

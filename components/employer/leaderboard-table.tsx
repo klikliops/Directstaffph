@@ -11,7 +11,7 @@ function getInitials(user: MockUser): string {
   return initials ? initials.toUpperCase() : user.email.slice(0, 2).toUpperCase();
 }
 
-export function LeaderboardTable({ currentEmail }: { currentEmail: string }) {
+export function LeaderboardTable() {
   const [roleFilter, setRoleFilter] = useState("All");
 
   const ranked = useMemo(() => {
@@ -52,48 +52,36 @@ export function LeaderboardTable({ currentEmail }: { currentEmail: string }) {
         </p>
       ) : (
         <ul className="mt-5 divide-y divide-slate-100">
-          {ranked.map(({ user, points }, index) => {
-            const isCurrentUser =
-              user.email.toLowerCase() === currentEmail.toLowerCase();
-            return (
-              <li
-                key={user.email}
-                className={`flex items-center gap-3 py-3 ${isCurrentUser ? "rounded-xl bg-cyan-50 px-3" : ""}`}
+          {ranked.map(({ user, points }, index) => (
+            <li key={user.email} className="flex items-center gap-3 py-3">
+              <span className="w-6 shrink-0 text-center text-sm font-bold text-slate-400">
+                {index + 1}
+              </span>
+              <div
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white ${
+                  user.profilePictureSet
+                    ? `bg-gradient-to-br ${user.avatarColorFrom} ${user.avatarColorTo}`
+                    : "bg-slate-300"
+                }`}
               >
-                <span className="w-6 shrink-0 text-center text-sm font-bold text-slate-400">
-                  {index + 1}
-                </span>
-                <div
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white ${
-                    user.profilePictureSet
-                      ? `bg-gradient-to-br ${user.avatarColorFrom} ${user.avatarColorTo}`
-                      : "bg-slate-300"
-                  }`}
-                >
-                  {getInitials(user)}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="flex items-center gap-1.5 truncate text-sm font-semibold text-brand-navy">
-                    {getDisplayName(user)}
-                    {user.isVip && (
-                      <Crown className="h-3.5 w-3.5 shrink-0 text-amber-500" />
-                    )}
-                    {isCurrentUser && (
-                      <span className="text-xs font-normal text-brand-accent-dark">
-                        (you)
-                      </span>
-                    )}
-                  </p>
-                  <p className="truncate text-xs text-slate-500">
-                    {user.jobInterest ?? "No role selected"}
-                  </p>
-                </div>
-                <span className="shrink-0 text-sm font-bold text-brand-navy">
-                  {points} pts
-                </span>
-              </li>
-            );
-          })}
+                {getInitials(user)}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="flex items-center gap-1.5 truncate text-sm font-semibold text-brand-navy">
+                  {getDisplayName(user)}
+                  {user.isVip && (
+                    <Crown className="h-3.5 w-3.5 shrink-0 text-amber-500" />
+                  )}
+                </p>
+                <p className="truncate text-xs text-slate-500">
+                  {user.jobInterest ?? "No role selected"}
+                </p>
+              </div>
+              <span className="shrink-0 text-sm font-bold text-brand-navy">
+                {points} pts
+              </span>
+            </li>
+          ))}
         </ul>
       )}
     </div>

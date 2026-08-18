@@ -1,12 +1,12 @@
 import { Settings } from "lucide-react";
 import { ComingSoon } from "@/components/shared/coming-soon";
 
-export default function AccountSettingsPage() {
+export default function EmployerSettingsPage() {
   return (
     <ComingSoon
       icon={Settings}
       title="Account Settings"
-      description="Manage your password, notifications, and account preferences here."
+      description="Manage your password, notifications, and billing preferences here."
     />
   );
 }

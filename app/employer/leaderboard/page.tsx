@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Crown } from "lucide-react";
 import { getSession, type MockUser } from "@/lib/local-auth";
-import { LeaderboardTable } from "@/components/jobseeker/leaderboard-table";
+import { LeaderboardTable } from "@/components/employer/leaderboard-table";
 
-export default function LeaderboardPage() {
+export default function EmployerLeaderboardPage() {
   const [session, setSession] = useState<MockUser | null>(null);
   const [checked, setChecked] = useState(false);
 
@@ -23,9 +23,9 @@ export default function LeaderboardPage() {
     return (
       <div className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          You need an account to view the leaderboard.{" "}
-          <Link href="/signup?role=jobseeker" className="font-semibold underline">
-            Create a free profile
+          You need an employer account to view the leaderboard.{" "}
+          <Link href="/signup?role=employer" className="font-semibold underline">
+            Create a free employer account
           </Link>
           .
         </div>
@@ -48,9 +48,9 @@ export default function LeaderboardPage() {
             VIP members only
           </p>
           <p className="mt-1.5 max-w-sm text-sm text-slate-600">
-            See how you rank against other jobseekers and get noticed by top
-            employers. Ask DirectStaffPH to upgrade your account to VIP to
-            unlock it.
+            See the top-scoring jobseekers on the platform and get a head
+            start on recruiting them. Ask DirectStaffPH to upgrade your
+            account to VIP to unlock it.
           </p>
         </div>
       </div>
@@ -68,7 +68,7 @@ export default function LeaderboardPage() {
       </p>
 
       <div className="mt-8">
-        <LeaderboardTable currentEmail={session.email} />
+        <LeaderboardTable />
       </div>
     </div>
   );

@@ -35,7 +35,7 @@ export function PlanCard() {
           Upgrade to a Business Pass to message candidates directly.
         </p>
         <Link
-          href="/#pricing"
+          href="/employer/billing"
           className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-accent-dark hover:underline"
         >
           View plans

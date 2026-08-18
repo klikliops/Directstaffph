@@ -11,10 +11,12 @@ export function DashboardTopbar({
   displayName,
   email = null,
   isVip = false,
+  homeHref = "/",
 }: {
   displayName: string | null;
   email?: string | null;
   isVip?: boolean;
+  homeHref?: string;
 }) {
   const router = useRouter();
 
@@ -26,7 +28,7 @@ export function DashboardTopbar({
   return (
     <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href={homeHref} className="flex items-center gap-2">
           <Logo gradientId="dashboard-topbar-logo" className="h-8 w-auto" />
           <span className="text-lg font-semibold tracking-tight text-brand-navy">
             DirectStaff<span className="text-brand-accent-dark">PH</span>
