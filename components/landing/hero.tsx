@@ -30,10 +30,10 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden bg-brand-navy pb-24 pt-16 sm:pt-24">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_-10%,rgba(34,211,238,0.18),transparent_45%),radial-gradient(circle_at_85%_10%,rgba(34,211,238,0.12),transparent_40%)]"
-      />
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-32 -top-32 h-[26rem] w-[26rem] rounded-full bg-brand-blue/25 blur-3xl" />
+        <div className="absolute -right-24 top-1/4 h-[30rem] w-[30rem] rounded-full bg-brand-accent/15 blur-3xl" />
+      </div>
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl text-center">

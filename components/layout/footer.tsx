@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LogoMark } from "@/components/shared/logo-mark";
+import { Logo } from "@/components/shared/logo-mark";
 
 const FOOTER_COLUMNS = [
   {
@@ -36,7 +36,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-10 md:grid-cols-5">
           <div className="col-span-2">
             <Link href="/" className="flex items-center gap-2">
-              <LogoMark />
+              <Logo gradientId="footer-logo" className="h-8 w-auto" />
               <span className="text-lg font-semibold tracking-tight text-white">
                 DirectStaff<span className="text-brand-accent">PH</span>
               </span>

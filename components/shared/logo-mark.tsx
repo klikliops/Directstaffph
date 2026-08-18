@@ -1,31 +1,38 @@
-function LogoGlyph({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
-      <rect x="5" y="4" width="4" height="16" rx="2" fill="currentColor" />
-      <path
-        d="M9 4a8 8 0 0 1 0 16"
-        stroke="currentColor"
-        strokeWidth="4"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path d="M9 9v6l5-3-5-3Z" fill="currentColor" />
-    </svg>
-  );
-}
-
-export function LogoMark({
-  tileClassName = "h-8 w-8 rounded-lg",
-  iconClassName = "h-4.5 w-4.5",
+// The mark itself carries the navy-to-cyan gradient (not a background
+// tile with a white icon on top) -- an SVG gradient needs a unique id
+// per instance, so callers must pass one whenever more than one Logo
+// could ever render on the same page (e.g. Navbar + Footer).
+export function Logo({
+  className = "h-8 w-auto",
+  gradientId,
 }: {
-  tileClassName?: string;
-  iconClassName?: string;
+  className?: string;
+  gradientId: string;
 }) {
   return (
-    <span
-      className={`flex shrink-0 items-center justify-center bg-gradient-to-br from-brand-navy via-brand-blue to-brand-accent text-white ${tileClassName}`}
-    >
-      <LogoGlyph className={iconClassName} />
-    </span>
+    <svg viewBox="0 0 100 120" className={className} aria-hidden="true">
+      <defs>
+        <linearGradient
+          id={gradientId}
+          gradientUnits="userSpaceOnUse"
+          x1="18"
+          y1="10"
+          x2="84"
+          y2="110"
+        >
+          <stop offset="0%" stopColor="#0f172a" />
+          <stop offset="50%" stopColor="#2563eb" />
+          <stop offset="100%" stopColor="#22d3ee" />
+        </linearGradient>
+      </defs>
+      <rect x="18" y="10" width="16" height="100" rx="4" fill={`url(#${gradientId})`} />
+      <path
+        d="M34 10 A50 50 0 0 1 34 110"
+        stroke={`url(#${gradientId})`}
+        strokeWidth="16"
+        fill="none"
+      />
+      <polygon points="34,40 34,80 72,60" fill={`url(#${gradientId})`} />
+    </svg>
   );
 }
