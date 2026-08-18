@@ -61,7 +61,7 @@ export function SignupForm({
 
     onSuccess?.();
     router.push(
-      role === "jobseeker" ? "/jobseeker/dashboard" : "/employer/dashboard"
+      role === "jobseeker" ? "/jobseeker/profile" : "/employer/dashboard"
     );
   }
 

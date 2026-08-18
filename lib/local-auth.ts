@@ -13,6 +13,13 @@ export interface MockUser {
   password: string;
   role: UserRole;
   mobileNumber?: string;
+  fullName?: string;
+  jobInterest?: string;
+  resumeSubmitted?: boolean;
+  resumeFileName?: string;
+  profilePictureSet?: boolean;
+  avatarColorFrom?: string;
+  avatarColorTo?: string;
 }
 
 const USERS_KEY = "directstaffph_mock_users";
@@ -66,9 +73,35 @@ export function loginUser(
   return { ok: true, user: match };
 }
 
+export function updateProfile(
+  username: string,
+  updates: Partial<Omit<MockUser, "username" | "password" | "role">>
+): MockUser | null {
+  const users = readUsers();
+  const index = users.findIndex(
+    (u) => u.username.toLowerCase() === username.toLowerCase()
+  );
+  if (index === -1) return null;
+
+  const updated = { ...users[index], ...updates };
+  const nextUsers = [...users];
+  nextUsers[index] = updated;
+  writeUsers(nextUsers);
+
+  const session = getSession();
+  if (session && session.username.toLowerCase() === username.toLowerCase()) {
+    saveSession(updated);
+  }
+
+  return updated;
+}
+
+export const SESSION_CHANGE_EVENT = "directstaffph:session-change";
+
 export function saveSession(user: MockUser) {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+  window.dispatchEvent(new Event(SESSION_CHANGE_EVENT));
 }
 
 export function getSession(): MockUser | null {
@@ -85,4 +118,5 @@ export function getSession(): MockUser | null {
 export function clearSession() {
   if (typeof window === "undefined") return;
   window.localStorage.removeItem(SESSION_KEY);
+  window.dispatchEvent(new Event(SESSION_CHANGE_EVENT));
 }
