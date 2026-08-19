@@ -69,7 +69,7 @@ export function EmployerSidebar() {
   return (
     <aside className="hidden w-64 shrink-0 flex-col border-r border-slate-200 bg-white md:flex">
       <div className="flex items-center justify-between px-5 pt-5">
-        <Link href="/employer/dashboard" className="flex items-center gap-2">
+        <Link href="/employer/dashboard" className="flex items-center gap-1">
           <Logo gradientId="employer-sidebar-logo" className="h-7 w-auto" />
           <span className="text-base font-semibold tracking-tight text-brand-navy">
             DirectStaff<span className="text-brand-accent-dark">PH</span>

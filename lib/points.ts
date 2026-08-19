@@ -53,3 +53,15 @@ export function calculatePoints(
   if (!user) return 0;
   return tasks.reduce((sum, task) => sum + (task.done(user) ? task.points : 0), 0);
 }
+
+// Ranks every jobseeker by score, highest first -- shared by the employer
+// leaderboard, the talent browse page, and a jobseeker's own dashboard so
+// "your rank" and "top jobseekers" always agree on the same ordering.
+export function rankJobseekers(
+  users: MockUser[]
+): { user: MockUser; points: number }[] {
+  return users
+    .filter((u) => u.role === "jobseeker")
+    .map((u) => ({ user: u, points: calculatePoints(u, JOBSEEKER_POINT_TASKS) }))
+    .sort((a, b) => b.points - a.points);
+}

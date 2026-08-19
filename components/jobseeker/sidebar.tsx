@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Bookmark,
+  Briefcase,
   Crown,
   FileText,
   LayoutDashboard,
@@ -27,6 +28,7 @@ import { NotificationsBell } from "@/components/shared/notifications-bell";
 const BASE_NAV_ITEMS = [
   { href: "/jobseeker/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/jobseeker/profile", label: "My Profile", icon: UserRound },
+  { href: "/jobseeker/jobs", label: "Job Boards", icon: Briefcase },
   { href: "/jobseeker/applications", label: "Job Applications", icon: FileText },
   { href: "/jobseeker/bookmarks", label: "Bookmarked Jobs", icon: Bookmark },
   { href: "/jobseeker/settings", label: "Account Settings", icon: Settings },
@@ -72,7 +74,7 @@ export function JobseekerSidebar() {
   return (
     <aside className="hidden w-64 shrink-0 flex-col border-r border-slate-200 bg-white md:flex">
       <div className="flex items-center justify-between px-5 pt-5">
-        <Link href="/jobseeker/dashboard" className="flex items-center gap-2">
+        <Link href="/jobseeker/dashboard" className="flex items-center gap-1">
           <Logo gradientId="sidebar-logo" className="h-7 w-auto" />
           <span className="text-base font-semibold tracking-tight text-brand-navy">
             DirectStaff<span className="text-brand-accent-dark">PH</span>

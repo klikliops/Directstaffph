@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getDisplayName, getSession, type MockUser } from "@/lib/local-auth";
 import { PointsBanner } from "@/components/jobseeker/points-banner";
-import { RecommendedJobs } from "@/components/jobseeker/recommended-jobs";
+import { DashboardHighlights } from "@/components/jobseeker/dashboard-highlights";
 import { VipUpsellBanner } from "@/components/jobseeker/vip-upsell-banner";
 
 export default function JobseekerDashboardPage() {
@@ -49,7 +49,7 @@ export default function JobseekerDashboardPage() {
       </div>
 
       <div className="mt-6">
-        <RecommendedJobs />
+        <DashboardHighlights session={session} />
       </div>
     </div>
   );

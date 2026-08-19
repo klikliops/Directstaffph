@@ -75,7 +75,7 @@ export default function EmployerLeaderboardPage() {
       </p>
 
       <div className="mt-8">
-        <LeaderboardTable />
+        <LeaderboardTable employer={session} contactUnlocked />
       </div>
     </div>
   );

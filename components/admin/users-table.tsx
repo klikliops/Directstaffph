@@ -154,11 +154,17 @@ export function UsersTable({
                           VIP
                         </span>
                       )
-                    ) : (user.planId ?? "free") !== "free" ? (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-cyan-50 px-2 py-0.5 text-xs font-semibold text-brand-accent-dark">
+                    ) : (
+                      <span
+                        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold ${
+                          (user.planId ?? "free") !== "free"
+                            ? "bg-cyan-50 text-brand-accent-dark"
+                            : "bg-slate-100 text-slate-500"
+                        }`}
+                      >
                         {PLAN_LABELS[user.planId ?? "free"]}
                       </span>
-                    ) : null}
+                    )}
                   </td>
                   <td className="py-3 pr-0 text-right">
                     <div className="flex justify-end gap-2">

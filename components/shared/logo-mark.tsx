@@ -12,8 +12,8 @@ export function Logo({
     <Image
       src="/logo.png"
       alt="DirectStaffPH"
-      width={120}
-      height={120}
+      width={175}
+      height={188}
       className={className}
       priority
     />

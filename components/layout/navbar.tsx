@@ -12,7 +12,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-brand-navy/90 backdrop-blur supports-[backdrop-filter]:bg-brand-navy/70">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-1">
           <Logo gradientId="nav-logo" className="h-8 w-auto" />
           <span className="text-lg font-semibold tracking-tight text-white">
             DirectStaff<span className="text-brand-accent">PH</span>
