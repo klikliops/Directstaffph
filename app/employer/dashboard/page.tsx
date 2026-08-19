@@ -61,7 +61,7 @@ export default function EmployerDashboardPage() {
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5">
         <div className="lg:col-span-2">
-          <PlanCard />
+          <PlanCard planId={session?.planId} />
         </div>
         <div className="lg:col-span-3">
           <MyJobsList jobs={jobs} />

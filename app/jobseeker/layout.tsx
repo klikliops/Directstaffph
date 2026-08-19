@@ -24,7 +24,7 @@ export default function JobseekerLayout({
           <DashboardTopbar
             displayName={session ? getDisplayName(session) : null}
             email={session?.email ?? null}
-            isVip={session?.isVip}
+            showCrown={session?.isVip}
             homeHref="/jobseeker/dashboard"
           />
         </div>

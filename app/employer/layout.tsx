@@ -24,7 +24,7 @@ export default function EmployerLayout({
           <DashboardTopbar
             displayName={session ? getDisplayName(session) : null}
             email={session?.email ?? null}
-            isVip={session?.isVip}
+            showCrown={Boolean(session?.planId && session.planId !== "free")}
             homeHref="/employer/dashboard"
           />
         </div>

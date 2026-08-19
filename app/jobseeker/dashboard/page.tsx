@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getDisplayName, getSession, type MockUser } from "@/lib/local-auth";
 import { PointsBanner } from "@/components/jobseeker/points-banner";
 import { RecommendedJobs } from "@/components/jobseeker/recommended-jobs";
+import { VipUpsellBanner } from "@/components/jobseeker/vip-upsell-banner";
 
 export default function JobseekerDashboardPage() {
   const [session, setSession] = useState<MockUser | null>(null);
@@ -40,6 +41,10 @@ export default function JobseekerDashboardPage() {
 
       <div className="mt-8">
         <PointsBanner session={session} />
+      </div>
+
+      <div className="mt-6">
+        <VipUpsellBanner session={session} />
       </div>
 
       <div className="mt-6">

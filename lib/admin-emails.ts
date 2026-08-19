@@ -1,8 +1,12 @@
-// DEMO-ONLY email broadcast. There is no email service wired up (no
-// SMTP/Resend/SendGrid), so "sending" just logs an entry to
-// localStorage. Nothing is actually delivered. Replace with a real
-// transactional email provider called from a server action before
-// this goes anywhere real.
+// DEMO-ONLY email broadcast. There is no real email service wired up
+// (no SMTP/Resend/SendGrid) -- "sending" logs an entry here for the
+// admin's own record AND fans out an in-app notification to each
+// recipient via lib/notifications-store.ts, which is how users
+// actually see it (there's nowhere else to deliver a fake email to).
+// Replace with a real transactional email provider called from a
+// server action before this goes anywhere real.
+
+import { addNotification } from "./notifications-store";
 
 export type EmailAudience = "jobseeker" | "employer" | "all";
 
@@ -38,14 +42,14 @@ export function sendMockEmail(
   audience: EmailAudience,
   subject: string,
   message: string,
-  recipientCount: number
+  recipientEmails: string[]
 ): EmailLogEntry {
   const entry: EmailLogEntry = {
     id: `email_${Date.now()}`,
     audience,
     subject,
     message,
-    recipientCount,
+    recipientCount: recipientEmails.length,
     sentAt: new Date().toISOString(),
   };
   const log = readLog();
@@ -53,5 +57,10 @@ export function sendMockEmail(
     EMAIL_LOG_KEY,
     JSON.stringify([...log, entry])
   );
+
+  for (const email of recipientEmails) {
+    addNotification(email, subject, message);
+  }
+
   return entry;
 }

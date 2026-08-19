@@ -5,10 +5,18 @@ import { Crown, Search, Trash2 } from "lucide-react";
 import {
   deleteUserAccount,
   getDisplayName,
+  setEmployerPlan,
   setVipStatus,
   type MockUser,
+  type PlanId,
   type UserRole,
 } from "@/lib/local-auth";
+
+const PLAN_LABELS: Record<PlanId, string> = {
+  free: "Free",
+  business: "Business Pass",
+  agency: "Agency Plan",
+};
 
 type RoleFilter = "all" | UserRole;
 
@@ -48,6 +56,11 @@ export function UsersTable({
     onChange(
       users.map((u) => (u.email === email ? { ...u, isVip: !current } : u))
     );
+  }
+
+  function handlePlanChange(email: string, planId: PlanId) {
+    setEmployerPlan(email, planId);
+    onChange(users.map((u) => (u.email === email ? { ...u, planId } : u)));
   }
 
   function handleDelete(email: string) {
@@ -102,7 +115,7 @@ export function UsersTable({
               <th className="py-2 pr-4 font-medium">Role</th>
               <th className="py-2 pr-4 font-medium">Job Interest</th>
               <th className="py-2 pr-4 font-medium">Joined</th>
-              <th className="py-2 pr-4 font-medium">VIP</th>
+              <th className="py-2 pr-4 font-medium">VIP / Plan</th>
               <th className="py-2 pr-0 font-medium text-right">Actions</th>
             </tr>
           </thead>
@@ -134,26 +147,46 @@ export function UsersTable({
                     {formatDate(user.createdAt)}
                   </td>
                   <td className="py-3 pr-4">
-                    {user.isVip && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-600">
-                        <Crown className="h-3 w-3" />
-                        VIP
+                    {user.role === "jobseeker" ? (
+                      user.isVip && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-600">
+                          <Crown className="h-3 w-3" />
+                          VIP
+                        </span>
+                      )
+                    ) : (user.planId ?? "free") !== "free" ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-cyan-50 px-2 py-0.5 text-xs font-semibold text-brand-accent-dark">
+                        {PLAN_LABELS[user.planId ?? "free"]}
                       </span>
-                    )}
+                    ) : null}
                   </td>
                   <td className="py-3 pr-0 text-right">
                     <div className="flex justify-end gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleToggleVip(user.email, Boolean(user.isVip))}
-                        className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
-                          user.isVip
-                            ? "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                            : "bg-amber-50 text-amber-600 hover:bg-amber-100"
-                        }`}
-                      >
-                        {user.isVip ? "Revoke VIP" : "Grant VIP"}
-                      </button>
+                      {user.role === "jobseeker" ? (
+                        <button
+                          type="button"
+                          onClick={() => handleToggleVip(user.email, Boolean(user.isVip))}
+                          className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+                            user.isVip
+                              ? "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                              : "bg-amber-50 text-amber-600 hover:bg-amber-100"
+                          }`}
+                        >
+                          {user.isVip ? "Revoke VIP" : "Grant VIP"}
+                        </button>
+                      ) : (
+                        <select
+                          value={user.planId ?? "free"}
+                          onChange={(event) =>
+                            handlePlanChange(user.email, event.target.value as PlanId)
+                          }
+                          className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-brand-navy focus:border-brand-accent focus:outline-none"
+                        >
+                          <option value="free">Free</option>
+                          <option value="business">Business Pass</option>
+                          <option value="agency">Agency Plan</option>
+                        </select>
+                      )}
                       <button
                         type="button"
                         onClick={() => handleDelete(user.email)}

@@ -14,9 +14,11 @@
 
 import { addNotification } from "./notifications-store";
 import { getJobById } from "./jobs-store";
+import type { PricingPlanId } from "./types";
 
 export type UserRole = "employer" | "jobseeker";
 export type RecruitmentType = "Full-time" | "Part-time";
+export type PlanId = PricingPlanId;
 
 export interface MockUser {
   email: string;
@@ -32,7 +34,13 @@ export interface MockUser {
   avatarColorTo?: string;
   appliedJobIds?: string[];
   bookmarkedJobIds?: string[];
+  // Jobseeker-only: paid perk purchased via the PH-local (GCash/Maya) demo
+  // checkout at /jobseeker/upgrade, or granted by an admin.
   isVip?: boolean;
+  // Employer-only: paid subscription tier purchased via the international
+  // (Stripe-style) demo checkout at /employer/billing/checkout, or set by
+  // an admin. Defaults to "free" when absent.
+  planId?: PlanId;
   createdAt?: string;
   recruitedJobId?: string;
   recruitedJobTitle?: string;
@@ -206,6 +214,58 @@ export function getAllUsers(): MockUser[] {
 
 export function setVipStatus(email: string, isVip: boolean): MockUser | null {
   return updateProfile(email, { isVip });
+}
+
+// Admin override -- no notification wording implying a real charge.
+export function setEmployerPlan(email: string, planId: PlanId): MockUser | null {
+  const updated = updateProfile(email, { planId });
+  if (updated) {
+    addNotification(
+      email,
+      "Your plan was updated",
+      `DirectStaffPH admin set your plan to ${PLAN_LABELS[planId]}.`
+    );
+  }
+  return updated;
+}
+
+// -- Payment gateway (demo) --
+//
+// Both of these simulate a successful checkout: no real card or e-wallet
+// processing happens anywhere in this codebase. Employers (international)
+// go through the Stripe-styled flow at /employer/billing/checkout; PH-based
+// jobseekers go through the GCash/Maya-styled flow at /jobseeker/upgrade.
+// Wiring up real payments needs a backend that can hold Stripe/PayMongo
+// secret keys -- this app is 100% client-side/localStorage today.
+
+const PLAN_LABELS: Record<PlanId, string> = {
+  free: "Free",
+  business: "Business Pass",
+  agency: "Agency Plan",
+};
+
+export function upgradeEmployerPlan(email: string, planId: PlanId): MockUser | null {
+  const updated = updateProfile(email, { planId });
+  if (updated) {
+    addNotification(
+      email,
+      "Payment successful",
+      `You're now on the ${PLAN_LABELS[planId]}. Contact info, video intros, and direct messaging are unlocked.`
+    );
+  }
+  return updated;
+}
+
+export function upgradeJobseekerVip(email: string): MockUser | null {
+  const updated = updateProfile(email, { isVip: true });
+  if (updated) {
+    addNotification(
+      email,
+      "Payment successful",
+      "You're now a VIP member! Your crown badge is live and you'll stand out on the employer leaderboard."
+    );
+  }
+  return updated;
 }
 
 export function deleteUserAccount(email: string): boolean {

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Check, FileText, Send, UserCheck } from "lucide-react";
-import { addNotification } from "@/lib/notifications-store";
+import { sendEmployerMessage } from "@/lib/messages-store";
 import {
   getDisplayName,
   recruitApplicant,
@@ -38,11 +38,15 @@ export function ApplicantsList({
 
   function handleSendMessage(applicant: MockUser) {
     if (!messageText.trim()) return;
-    addNotification(
-      applicant.email,
-      `New message from ${job.companyName}`,
-      messageText.trim()
-    );
+    sendEmployerMessage({
+      fromEmail: employerEmail,
+      toEmail: applicant.email,
+      toName: getDisplayName(applicant),
+      jobId: job.id,
+      jobTitle: job.title,
+      companyName: job.companyName,
+      body: messageText.trim(),
+    });
     setSentToEmails((prev) => new Set(prev).add(applicant.email));
     setMessagingEmail(null);
     setMessageText("");

@@ -16,9 +16,9 @@ const AUDIENCE_OPTIONS: { value: EmailAudience; label: string }[] = [
   { value: "employer", label: "Employers (Clients)" },
 ];
 
-function countRecipients(users: MockUser[], audience: EmailAudience): number {
-  if (audience === "all") return users.length;
-  return users.filter((u) => u.role === audience).length;
+function getRecipients(users: MockUser[], audience: EmailAudience): MockUser[] {
+  if (audience === "all") return users;
+  return users.filter((u) => u.role === audience);
 }
 
 function formatDateTime(iso: string): string {
@@ -37,13 +37,19 @@ export function BroadcastEmailForm({ users }: { users: MockUser[] }) {
   const [log, setLog] = useState<EmailLogEntry[]>(() => getEmailLog());
   const [confirmation, setConfirmation] = useState<string | null>(null);
 
-  const recipientCount = countRecipients(users, audience);
+  const recipients = getRecipients(users, audience);
+  const recipientCount = recipients.length;
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (!subject.trim() || !message.trim()) return;
 
-    const entry = sendMockEmail(audience, subject.trim(), message.trim(), recipientCount);
+    const entry = sendMockEmail(
+      audience,
+      subject.trim(),
+      message.trim(),
+      recipients.map((r) => r.email)
+    );
     setLog(getEmailLog());
     setSubject("");
     setMessage("");

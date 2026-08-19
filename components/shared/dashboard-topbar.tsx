@@ -10,12 +10,12 @@ import { NotificationsBell } from "@/components/shared/notifications-bell";
 export function DashboardTopbar({
   displayName,
   email = null,
-  isVip = false,
+  showCrown = false,
   homeHref = "/",
 }: {
   displayName: string | null;
   email?: string | null;
-  isVip?: boolean;
+  showCrown?: boolean;
   homeHref?: string;
 }) {
   const router = useRouter();
@@ -39,10 +39,10 @@ export function DashboardTopbar({
           {displayName && (
             <span className="hidden items-center gap-1.5 text-sm font-medium text-slate-600 sm:flex">
               {displayName}
-              {isVip && (
+              {showCrown && (
                 <Crown
                   className="h-3.5 w-3.5 text-amber-500"
-                  aria-label="VIP member"
+                  aria-label="Paid member"
                 />
               )}
             </span>

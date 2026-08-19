@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   LifeBuoy,
   LogOut,
+  MessageSquare,
   Plus,
   Search,
   Settings,
@@ -28,6 +29,7 @@ const NAV_ITEMS = [
   { href: "/employer/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/employer/talent", label: "Browse Talent", icon: Search },
   { href: "/employer/jobs/new", label: "Post a Job", icon: Plus },
+  { href: "/employer/messages", label: "Messages", icon: MessageSquare },
   { href: "/employer/leaderboard", label: "Leaderboard", icon: Trophy },
   { href: "/employer/billing", label: "Plans & Billing", icon: CreditCard },
   { href: "/employer/settings", label: "Account Settings", icon: Settings },
@@ -85,10 +87,10 @@ export function EmployerSidebar() {
             <span className="truncate">
               {session ? getDisplayName(session) : "Employer"}
             </span>
-            {session?.isVip && (
+            {session?.planId && session.planId !== "free" && (
               <Crown
                 className="h-3.5 w-3.5 shrink-0 text-amber-500"
-                aria-label="VIP member"
+                aria-label="Paid plan member"
               />
             )}
           </p>

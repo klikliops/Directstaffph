@@ -1,20 +1,24 @@
-import { Briefcase, Crown, UserRound, Users } from "lucide-react";
+import { Briefcase, CreditCard, Crown, UserRound, Users } from "lucide-react";
 import type { MockUser } from "@/lib/local-auth";
 
 export function StatsCards({ users }: { users: MockUser[] }) {
   const jobseekers = users.filter((u) => u.role === "jobseeker").length;
   const employers = users.filter((u) => u.role === "employer").length;
-  const vipCount = users.filter((u) => u.isVip).length;
+  const vipCount = users.filter((u) => u.role === "jobseeker" && u.isVip).length;
+  const paidEmployerCount = users.filter(
+    (u) => u.role === "employer" && u.planId && u.planId !== "free"
+  ).length;
 
   const stats = [
     { icon: Users, label: "Total Accounts", value: users.length },
     { icon: UserRound, label: "Jobseekers", value: jobseekers },
     { icon: Briefcase, label: "Employers", value: employers },
-    { icon: Crown, label: "VIP Members", value: vipCount },
+    { icon: Crown, label: "VIP Jobseekers", value: vipCount },
+    { icon: CreditCard, label: "Paid Employer Plans", value: paidEmployerCount },
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
       {stats.map(({ icon: Icon, label, value }) => (
         <div
           key={label}

@@ -198,6 +198,15 @@ export const MOCK_JOBS: JobPosting[] = [
   },
 ];
 
+// PH-local jobseeker VIP perk, paid via GCash/Maya (see /jobseeker/upgrade).
+export const VIP_PRICE_PHP = 499;
+
+export const VIP_FEATURES = [
+  "Crown badge on your profile & the employer leaderboard",
+  "Featured placement when employers browse the leaderboard",
+  "Priority visibility to recruiting employers",
+];
+
 export const PRICING_PLANS: PricingPlan[] = [
   {
     id: "free",

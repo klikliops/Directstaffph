@@ -24,7 +24,7 @@ import { JOBSEEKER_POINT_TASKS, calculatePoints } from "@/lib/points";
 import { Logo } from "@/components/shared/logo-mark";
 import { NotificationsBell } from "@/components/shared/notifications-bell";
 
-const NAV_ITEMS = [
+const BASE_NAV_ITEMS = [
   { href: "/jobseeker/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/jobseeker/profile", label: "My Profile", icon: UserRound },
   { href: "/jobseeker/applications", label: "Job Applications", icon: FileText },
@@ -32,6 +32,8 @@ const NAV_ITEMS = [
   { href: "/jobseeker/settings", label: "Account Settings", icon: Settings },
   { href: "/jobseeker/support", label: "Support", icon: LifeBuoy },
 ];
+
+const VIP_NAV_ITEM = { href: "/jobseeker/upgrade", label: "Go VIP", icon: Crown };
 
 function getDisplayName(session: MockUser | null): string {
   return getUserDisplayName(session) || "Jobseeker";
@@ -109,9 +111,10 @@ export function JobseekerSidebar() {
       </div>
 
       <nav className="mt-6 flex-1 space-y-1 px-3">
-        {NAV_ITEMS.map((item) => {
+        {(session?.isVip ? BASE_NAV_ITEMS : [...BASE_NAV_ITEMS, VIP_NAV_ITEM]).map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
+          const isVipLink = item.href === "/jobseeker/upgrade";
           return (
             <Link
               key={item.href}
@@ -119,7 +122,9 @@ export function JobseekerSidebar() {
               className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                 isActive
                   ? "bg-cyan-50 text-brand-accent-dark"
-                  : "text-slate-600 hover:bg-slate-50"
+                  : isVipLink
+                    ? "text-amber-600 hover:bg-amber-50"
+                    : "text-slate-600 hover:bg-slate-50"
               }`}
             >
               <Icon className="h-4 w-4" />
