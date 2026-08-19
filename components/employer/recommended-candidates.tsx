@@ -2,7 +2,11 @@ import Link from "next/link";
 import { MOCK_CANDIDATES } from "@/lib/mock-data";
 import { CandidateCard } from "@/components/landing/candidate-card";
 
-export function RecommendedCandidates() {
+export function RecommendedCandidates({
+  contactUnlocked = false,
+}: {
+  contactUnlocked?: boolean;
+}) {
   const candidates = MOCK_CANDIDATES.slice(0, 3);
 
   return (
@@ -18,7 +22,10 @@ export function RecommendedCandidates() {
 
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {candidates.map((candidate) => (
-          <CandidateCard key={candidate.id} candidate={candidate} />
+          <CandidateCard
+            key={candidate.id}
+            candidate={{ ...candidate, isContactUnlocked: contactUnlocked }}
+          />
         ))}
       </div>
     </div>

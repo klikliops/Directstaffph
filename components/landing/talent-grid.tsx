@@ -13,7 +13,7 @@ export function TalentGrid() {
           <p className="mt-4 text-lg text-slate-600">
             Every profile is ID-verified and scored before it goes live.
             Contact details, video intros, and messaging unlock with a
-            Business Pass or Agency Plan.
+            Business Pass or Enterprise Plan.
           </p>
         </div>
 

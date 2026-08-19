@@ -47,7 +47,7 @@ export default function EmployerLeaderboardPage() {
             <Lock className="h-6 w-6" />
           </span>
           <p className="mt-4 text-base font-semibold text-brand-navy">
-            Business Pass or Agency Plan required
+            Business Pass or Enterprise Plan required
           </p>
           <p className="mt-1.5 max-w-sm text-sm text-slate-600">
             See the top-scoring jobseekers on the platform and get a head

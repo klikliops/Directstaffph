@@ -212,8 +212,19 @@ export function getAllUsers(): MockUser[] {
   return readUsers();
 }
 
+// Admin override -- no notification wording implying a real charge.
 export function setVipStatus(email: string, isVip: boolean): MockUser | null {
-  return updateProfile(email, { isVip });
+  const updated = updateProfile(email, { isVip });
+  if (updated) {
+    addNotification(
+      email,
+      isVip ? "You're now a VIP member!" : "VIP status removed",
+      isVip
+        ? "DirectStaffPH admin granted you VIP status. Your crown badge is live and you'll stand out on the employer leaderboard."
+        : "DirectStaffPH admin removed your VIP status."
+    );
+  }
+  return updated;
 }
 
 // Admin override -- no notification wording implying a real charge.
@@ -241,7 +252,7 @@ export function setEmployerPlan(email: string, planId: PlanId): MockUser | null 
 const PLAN_LABELS: Record<PlanId, string> = {
   free: "Free",
   business: "Business Pass",
-  agency: "Agency Plan",
+  enterprise: "Enterprise Plan",
 };
 
 export function upgradeEmployerPlan(email: string, planId: PlanId): MockUser | null {
@@ -299,7 +310,20 @@ export function getSession(): MockUser | null {
     const parsed = JSON.parse(raw) as MockUser;
     // A session saved before the email/firstName/lastName schema change
     // won't have `.email` -- treat it as logged out rather than crash.
-    return typeof parsed.email === "string" ? parsed : null;
+    if (typeof parsed.email !== "string") return null;
+
+    // The session snapshot is frozen at login/last-update time. If an
+    // admin grants VIP or changes a plan in another tab, that write goes
+    // straight to the shared `users` list in localStorage -- this tab's
+    // sessionStorage copy never hears about it. Always resolve against
+    // the canonical record so admin changes take effect immediately
+    // instead of requiring a logout/login.
+    const current = readUsers().find(
+      (u) => u.email.toLowerCase() === parsed.email.toLowerCase()
+    );
+    if (!current) return parsed;
+    window.sessionStorage.setItem(SESSION_KEY, JSON.stringify(current));
+    return current;
   } catch {
     return null;
   }
@@ -309,6 +333,18 @@ export function clearSession() {
   if (typeof window === "undefined") return;
   window.sessionStorage.removeItem(SESSION_KEY);
   window.dispatchEvent(new Event(SESSION_CHANGE_EVENT));
+}
+
+// The native `storage` event fires in *other* tabs when localStorage
+// changes (never the tab that made the change), which is exactly the
+// admin-tab-writes / jobseeker-tab-is-open scenario. Re-broadcast it as
+// a session-change so already-open dashboards refresh without a reload.
+if (typeof window !== "undefined") {
+  window.addEventListener("storage", (event) => {
+    if (event.key === USERS_KEY) {
+      window.dispatchEvent(new Event(SESSION_CHANGE_EVENT));
+    }
+  });
 }
 
 export function getDisplayName(user: MockUser | null): string {

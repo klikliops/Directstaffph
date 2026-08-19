@@ -6,17 +6,18 @@ export function PointsBanner({ session }: { session: MockUser | null }) {
   const points = calculatePoints(session, JOBSEEKER_POINT_TASKS);
 
   return (
-    <div className="flex flex-col items-center gap-2 rounded-2xl border border-cyan-100 bg-gradient-to-br from-cyan-50 to-white px-6 py-10 text-center">
-      <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-brand-accent-dark">
-        <Sparkles className="h-4 w-4" />
-        Your Score
+    <div className="flex shrink-0 items-center gap-3 rounded-2xl border border-cyan-100 bg-gradient-to-br from-cyan-50 to-white py-3 pl-3 pr-5">
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-brand-accent-dark shadow-sm">
+        <Sparkles className="h-5 w-5" />
       </span>
-      <p className="text-6xl font-extrabold tracking-tight text-brand-navy sm:text-7xl">
-        {points}
-      </p>
-      <p className="max-w-sm text-sm text-slate-600">
-        Complete tasks, get points, and be noticed by companies.
-      </p>
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-wide text-brand-accent-dark">
+          Your Score
+        </p>
+        <p className="text-2xl font-extrabold leading-tight text-brand-navy">
+          {points} <span className="text-xs font-medium text-slate-400">pts</span>
+        </p>
+      </div>
     </div>
   );
 }

@@ -51,11 +51,13 @@ export function NotificationsBell({ email }: { email: string | null }) {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   function handleToggle() {
-    setOpen((prev) => {
-      const next = !prev;
-      if (next && email) markAllRead(email);
-      return next;
-    });
+    const next = !open;
+    setOpen(next);
+    // Side effect (dispatches NOTIFICATIONS_CHANGE_EVENT, which triggers
+    // setState in every mounted NotificationsBell) must run outside the
+    // setOpen updater -- React invokes that updater during render, and
+    // triggering another component's setState mid-render throws.
+    if (next && email) markAllRead(email);
   }
 
   if (!email) return null;

@@ -15,7 +15,7 @@ import {
 const PLAN_LABELS: Record<PlanId, string> = {
   free: "Free",
   business: "Business Pass",
-  agency: "Agency Plan",
+  enterprise: "Enterprise Plan",
 };
 
 type RoleFilter = "all" | UserRole;
@@ -184,7 +184,7 @@ export function UsersTable({
                         >
                           <option value="free">Free</option>
                           <option value="business">Business Pass</option>
-                          <option value="agency">Agency Plan</option>
+                          <option value="enterprise">Enterprise Plan</option>
                         </select>
                       )}
                       <button

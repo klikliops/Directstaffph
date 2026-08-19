@@ -5,7 +5,7 @@ import type { PlanId } from "@/lib/local-auth";
 const PLAN_NAMES: Record<PlanId, string> = {
   free: "Free",
   business: "Business Pass",
-  agency: "Agency Plan",
+  enterprise: "Enterprise Plan",
 };
 
 const PLAN_FEATURES: Record<PlanId, string[]> = {
@@ -17,7 +17,7 @@ const PLAN_FEATURES: Record<PlanId, string[]> = {
     "Watch full video introductions",
     "Direct in-app messaging",
   ],
-  agency: [
+  enterprise: [
     "Everything in Business Pass",
     "Up to 5 team seats",
     "Priority candidate shortlisting",

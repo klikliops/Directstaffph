@@ -69,7 +69,9 @@ export default function EmployerDashboardPage() {
       </div>
 
       <div className="mt-6">
-        <RecommendedCandidates />
+        <RecommendedCandidates
+          contactUnlocked={Boolean(session?.planId && session.planId !== "free")}
+        />
       </div>
     </div>
   );

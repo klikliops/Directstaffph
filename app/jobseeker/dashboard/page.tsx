@@ -32,14 +32,15 @@ export default function JobseekerDashboardPage() {
         </div>
       )}
 
-      <h1 className="text-2xl font-bold text-brand-navy sm:text-3xl">
-        Welcome{session ? `, ${getDisplayName(session)}` : ""}
-      </h1>
-      <p className="mt-1 text-slate-600">
-        Here&rsquo;s what&rsquo;s happening with your profile.
-      </p>
-
-      <div className="mt-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-brand-navy sm:text-3xl">
+            Welcome{session ? `, ${getDisplayName(session)}` : ""}
+          </h1>
+          <p className="mt-1 text-slate-600">
+            Here&rsquo;s what&rsquo;s happening with your profile.
+          </p>
+        </div>
         <PointsBanner session={session} />
       </div>
 

@@ -240,8 +240,8 @@ export const PRICING_PLANS: PricingPlan[] = [
     ctaLabel: "Start Business Pass",
   },
   {
-    id: "agency",
-    name: "Agency Plan",
+    id: "enterprise",
+    name: "Enterprise Plan",
     priceUsdPerMonth: 149,
     billingNote: "per month, billed monthly",
     description: "For agencies and teams making recurring hires.",
@@ -253,6 +253,6 @@ export const PRICING_PLANS: PricingPlan[] = [
       "Early access to new talent pools",
     ],
     isMostPopular: false,
-    ctaLabel: "Start Agency Plan",
+    ctaLabel: "Start Enterprise Plan",
   },
 ];

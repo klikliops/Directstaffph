@@ -81,7 +81,7 @@ export interface JobPosting {
   postedByEmail?: string; // employer account that created this posting (undefined for seed/mock listings)
 }
 
-export type PricingPlanId = "free" | "business" | "agency";
+export type PricingPlanId = "free" | "business" | "enterprise";
 
 export interface PricingPlan {
   id: PricingPlanId;
