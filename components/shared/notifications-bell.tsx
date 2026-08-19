@@ -20,7 +20,18 @@ function timeAgo(iso: string): string {
   return `${days}d ago`;
 }
 
-export function NotificationsBell({ email }: { email: string | null }) {
+export function NotificationsBell({
+  email,
+  align = "right",
+}: {
+  email: string | null;
+  // Which edge the dropdown should hang from once there's room for its
+  // fixed width (see the `md:` panel below). The sidebars sit in a narrow
+  // column pinned to the left edge of the screen -- anchoring "right" there
+  // pushes the panel off the left of the viewport, so those callers pass
+  // "left" to open it into the wide content area instead.
+  align?: "left" | "right";
+}) {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<UserNotification[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -77,7 +88,11 @@ export function NotificationsBell({ email }: { email: string | null }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-20 mt-2 w-80 rounded-2xl border border-slate-200 bg-white p-2 shadow-lg">
+        <div
+          className={`fixed inset-x-4 top-16 z-20 rounded-2xl border border-slate-200 bg-white p-2 shadow-lg md:absolute md:inset-x-auto md:top-full md:mt-2 md:w-80 ${
+            align === "left" ? "md:left-0" : "md:right-0"
+          }`}
+        >
           <p className="px-3 py-2 text-sm font-semibold text-brand-navy">
             Notifications
           </p>

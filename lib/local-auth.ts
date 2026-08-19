@@ -190,6 +190,20 @@ export function recruitApplicant(
   return updated;
 }
 
+// Jobseeker self-service: clears recruited/employment status so the
+// leaderboard, talent page, and their own dashboard show them as
+// available again. Does not touch the employer's job posting.
+export function removeEmployment(email: string): MockUser | null {
+  return updateProfile(email, {
+    recruitedJobId: undefined,
+    recruitedJobTitle: undefined,
+    recruitedEmploymentType: undefined,
+    recruitedByEmail: undefined,
+    recruitedCompanyName: undefined,
+    recruitedAt: undefined,
+  });
+}
+
 export function toggleBookmark(email: string, jobId: string): MockUser | null {
   const users = readUsers();
   const index = users.findIndex(

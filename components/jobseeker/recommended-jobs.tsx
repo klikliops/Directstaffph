@@ -1,28 +1,49 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Bookmark, BookmarkCheck, Briefcase, Check, Lock, MapPin, Search } from "lucide-react";
+import {
+  Bookmark,
+  BookmarkCheck,
+  Briefcase,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  Flag,
+  Lock,
+  MapPin,
+  Search,
+} from "lucide-react";
 import { getAllJobs } from "@/lib/jobs-store";
 import {
   applyToJob,
+  getDisplayName,
   getSession,
   isLockedFromApplying,
   toggleBookmark,
   type MockUser,
 } from "@/lib/local-auth";
+import type { JobPosting } from "@/lib/types";
 import { SkillBadge } from "@/components/landing/skill-badge";
+import { ReportEmployerModal } from "@/components/jobseeker/report-employer-modal";
 
 export function RecommendedJobs() {
   const [session, setSession] = useState<MockUser | null>(null);
   const [query, setQuery] = useState("");
-  const jobs = useMemo(() => getAllJobs(), []);
+  const [jobs, setJobs] = useState<JobPosting[]>([]);
+  const [expandedJobId, setExpandedJobId] = useState<string | null>(null);
+  const [reportTarget, setReportTarget] = useState<JobPosting | null>(null);
 
   useEffect(() => {
     setSession(getSession());
+    // getAllJobs() reads localStorage, which isn't available during SSR --
+    // computing this eagerly would return different data on the server
+    // (just the static seed jobs) vs. the client's first paint (seed jobs
+    // plus any real employer postings), causing a hydration mismatch.
+    setJobs(getAllJobs());
   }, []);
 
-  const filteredJobs = useMemo(() => {
+  const filteredJobs = (() => {
     const q = query.trim().toLowerCase();
     if (!q) return jobs;
     return jobs.filter(
@@ -31,7 +52,7 @@ export function RecommendedJobs() {
         job.companyName.toLowerCase().includes(q) ||
         job.requiredSkills.some((skill) => skill.toLowerCase().includes(q))
     );
-  }, [jobs, query]);
+  })();
 
   const locked = isLockedFromApplying(session);
 
@@ -88,6 +109,7 @@ export function RecommendedJobs() {
           const bookmarked = Boolean(
             session?.bookmarkedJobIds?.includes(job.id)
           );
+          const expanded = expandedJobId === job.id;
 
           return (
             <div
@@ -95,9 +117,18 @@ export function RecommendedJobs() {
               className="rounded-xl border border-slate-100 bg-slate-50 p-4"
             >
               <div className="flex flex-wrap items-start justify-between gap-2">
-                <div>
-                  <h3 className="text-sm font-semibold text-brand-navy">
+                <button
+                  type="button"
+                  onClick={() => setExpandedJobId(expanded ? null : job.id)}
+                  className="flex-1 text-left"
+                >
+                  <h3 className="flex items-center gap-1 text-sm font-semibold text-brand-navy">
                     {job.title}
+                    {expanded ? (
+                      <ChevronUp className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+                    ) : (
+                      <ChevronDown className="h-3.5 w-3.5 shrink-0 text-slate-400" />
+                    )}
                   </h3>
                   <p className="mt-0.5 flex items-center gap-1 text-xs text-slate-500">
                     <Briefcase className="h-3 w-3" />
@@ -106,7 +137,7 @@ export function RecommendedJobs() {
                     <MapPin className="h-3 w-3" />
                     {job.isRemote ? "Remote" : "On-site"}
                   </p>
-                </div>
+                </button>
                 <div className="flex shrink-0 items-center gap-3">
                   <span className="text-sm font-semibold text-brand-navy">
                     ${job.monthlySalaryMinUsd.toLocaleString()}&ndash;$
@@ -132,8 +163,24 @@ export function RecommendedJobs() {
                       )}
                     </button>
                   )}
+                  {session && (
+                    <button
+                      type="button"
+                      onClick={() => setReportTarget(job)}
+                      aria-label={`Report ${job.companyName}`}
+                      className="flex h-7 w-7 items-center justify-center rounded-full text-slate-400 transition-colors hover:text-red-500"
+                    >
+                      <Flag className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
               </div>
+
+              {expanded && (
+                <p className="mt-3 whitespace-pre-line text-sm leading-6 text-slate-600">
+                  {job.description}
+                </p>
+              )}
 
               <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex flex-wrap gap-1.5">
@@ -172,6 +219,18 @@ export function RecommendedJobs() {
           );
         })}
       </div>
+
+      {reportTarget && session && (
+        <ReportEmployerModal
+          reporterEmail={session.email}
+          reporterName={getDisplayName(session)}
+          employerEmail={reportTarget.postedByEmail}
+          companyName={reportTarget.companyName}
+          jobId={reportTarget.id}
+          jobTitle={reportTarget.title}
+          onClose={() => setReportTarget(null)}
+        />
+      )}
     </div>
   );
 }

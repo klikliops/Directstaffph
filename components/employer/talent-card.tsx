@@ -61,10 +61,16 @@ export function TalentCard({
             Resume
           </span>
         )}
-        {jobseeker.recruitedJobId && (
+        {jobseeker.recruitedJobId ? (
           <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-600">
             <Briefcase className="h-3 w-3" />
-            Employed
+            {jobseeker.recruitedEmploymentType === "Full-time"
+              ? "Full Time Employed"
+              : "Part Time Employed"}
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-[11px] font-medium text-slate-500">
+            Available
           </span>
         )}
       </div>

@@ -75,7 +75,7 @@ export function EmployerSidebar() {
             DirectStaff<span className="text-brand-accent-dark">PH</span>
           </span>
         </Link>
-        <NotificationsBell email={session?.email ?? null} />
+        <NotificationsBell email={session?.email ?? null} align="left" />
       </div>
 
       <div className="mt-6 flex items-center gap-3 px-5">

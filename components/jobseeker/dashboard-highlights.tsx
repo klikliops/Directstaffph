@@ -2,14 +2,20 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Briefcase, MapPin, Trophy } from "lucide-react";
-import { getAllUsers, type MockUser } from "@/lib/local-auth";
+import { Briefcase, MapPin, Trophy, X } from "lucide-react";
+import { getAllUsers, removeEmployment, type MockUser } from "@/lib/local-auth";
 import { getAllJobs } from "@/lib/jobs-store";
 import { rankJobseekers } from "@/lib/points";
 import type { JobPosting } from "@/lib/types";
 import { SkillBadge } from "@/components/landing/skill-badge";
 
-export function DashboardHighlights({ session }: { session: MockUser | null }) {
+export function DashboardHighlights({
+  session,
+  onSessionUpdate,
+}: {
+  session: MockUser | null;
+  onSessionUpdate: (user: MockUser) => void;
+}) {
   const [rank, setRank] = useState<number | null>(null);
   const [totalRanked, setTotalRanked] = useState(0);
   const [featuredJobs, setFeaturedJobs] = useState<JobPosting[]>([]);
@@ -34,6 +40,19 @@ export function DashboardHighlights({ session }: { session: MockUser | null }) {
     const rest = allJobs.filter((job) => !matching.includes(job));
     setFeaturedJobs([...matching, ...rest].slice(0, 3));
   }, [session]);
+
+  function handleRemoveEmployment() {
+    if (!session) return;
+    if (
+      !window.confirm(
+        "Remove your current employment status? You'll show as available again."
+      )
+    ) {
+      return;
+    }
+    const updated = removeEmployment(session.email);
+    if (updated) onSessionUpdate(updated);
+  }
 
   return (
     <div className="space-y-6">
@@ -60,19 +79,26 @@ export function DashboardHighlights({ session }: { session: MockUser | null }) {
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-brand-accent-dark">
             <Briefcase className="h-5 w-5" />
           </span>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             {session?.recruitedJobId ? (
               <>
                 <p className="truncate text-base font-bold text-brand-navy">
-                  {session.recruitedCompanyName}
+                  {session.recruitedEmploymentType === "Full-time"
+                    ? "Full Time Employed"
+                    : "Part Time Employed"}
                 </p>
-                <p className="truncate text-xs text-slate-500">
-                  {session.recruitedEmploymentType} &middot; {session.recruitedJobTitle}
-                </p>
+                <button
+                  type="button"
+                  onClick={handleRemoveEmployment}
+                  className="mt-0.5 flex items-center gap-1 text-xs font-medium text-slate-400 hover:text-red-500"
+                >
+                  <X className="h-3 w-3" />
+                  Remove employment
+                </button>
               </>
             ) : (
               <>
-                <p className="text-base font-bold text-brand-navy">Open to work</p>
+                <p className="text-base font-bold text-brand-navy">Available</p>
                 <p className="text-xs text-slate-500">Not currently employed</p>
               </>
             )}

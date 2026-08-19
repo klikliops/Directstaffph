@@ -81,6 +81,31 @@ export interface JobPosting {
   postedByEmail?: string; // employer account that created this posting (undefined for seed/mock listings)
 }
 
+export type ReportReason =
+  | "scam_or_fake"
+  | "payment_request"
+  | "unprofessional_communication"
+  | "discrimination"
+  | "misleading_details"
+  | "unresponsive"
+  | "other";
+
+export const REPORT_REASONS: { id: ReportReason; label: string }[] = [
+  { id: "scam_or_fake", label: "Job posting looks fake or like a scam" },
+  { id: "payment_request", label: "Asked for money or payment upfront" },
+  {
+    id: "unprofessional_communication",
+    label: "Unprofessional or abusive communication",
+  },
+  { id: "discrimination", label: "Discriminatory questions or requirements" },
+  {
+    id: "misleading_details",
+    label: "Job details didn't match what was promised",
+  },
+  { id: "unresponsive", label: "Unresponsive after hiring" },
+  { id: "other", label: "Other" },
+];
+
 export type PricingPlanId = "free" | "business" | "enterprise";
 
 export interface PricingPlan {

@@ -49,7 +49,7 @@ export default function JobseekerDashboardPage() {
       </div>
 
       <div className="mt-6">
-        <DashboardHighlights session={session} />
+        <DashboardHighlights session={session} onSessionUpdate={setSession} />
       </div>
     </div>
   );
