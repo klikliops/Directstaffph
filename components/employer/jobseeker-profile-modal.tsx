@@ -102,14 +102,14 @@ export function JobseekerProfileModal({
             {points} pts{rank ? ` · #${rank} on leaderboard` : ""}
           </span>
           {employed ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-600">
+            <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-600">
               <Briefcase className="h-3 w-3" />
               {jobseeker.recruitedEmploymentType === "Full-time"
                 ? "Full Time Employed"
                 : "Part Time Employed"}
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-500">
+            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-600">
               Available
             </span>
           )}

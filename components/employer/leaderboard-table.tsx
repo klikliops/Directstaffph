@@ -108,14 +108,14 @@ export function LeaderboardTable({
                   </p>
                 </div>
                 {user.recruitedJobId ? (
-                  <span className="hidden shrink-0 items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-600 sm:inline-flex">
+                  <span className="hidden shrink-0 items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-600 sm:inline-flex">
                     <Briefcase className="h-3 w-3" />
                     {user.recruitedEmploymentType === "Full-time"
                       ? "Full Time Employed"
                       : "Part Time Employed"}
                   </span>
                 ) : (
-                  <span className="hidden shrink-0 items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500 sm:inline-flex">
+                  <span className="hidden shrink-0 items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-600 sm:inline-flex">
                     Available
                   </span>
                 )}

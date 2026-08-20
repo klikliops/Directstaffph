@@ -76,7 +76,13 @@ export function DashboardHighlights({
         </div>
 
         <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-brand-accent-dark">
+          <span
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
+              session?.recruitedJobId
+                ? "bg-blue-50 text-blue-600"
+                : "bg-emerald-50 text-emerald-600"
+            }`}
+          >
             <Briefcase className="h-5 w-5" />
           </span>
           <div className="min-w-0 flex-1">
@@ -131,8 +137,8 @@ export function DashboardHighlights({
                 className="rounded-xl border border-slate-100 bg-slate-50 p-4"
               >
                 <div className="flex flex-wrap items-start justify-between gap-2">
-                  <div>
-                    <h3 className="text-sm font-semibold text-brand-navy">
+                  <Link href={`/jobseeker/jobs/${job.id}`}>
+                    <h3 className="text-sm font-semibold text-brand-navy hover:underline">
                       {job.title}
                     </h3>
                     <p className="mt-0.5 flex items-center gap-1 text-xs text-slate-500">
@@ -142,7 +148,7 @@ export function DashboardHighlights({
                       <MapPin className="h-3 w-3" />
                       {job.isRemote ? "Remote" : "On-site"}
                     </p>
-                  </div>
+                  </Link>
                   <span className="text-sm font-semibold text-brand-navy">
                     ${job.monthlySalaryMinUsd.toLocaleString()}&ndash;$
                     {job.monthlySalaryMaxUsd.toLocaleString()}/mo
