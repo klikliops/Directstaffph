@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Crown, Search, Trash2 } from "lucide-react";
+import { Crown, Eye, Search, Trash2 } from "lucide-react";
 import {
   deleteUserAccount,
   getDisplayName,
@@ -11,6 +11,7 @@ import {
   type PlanId,
   type UserRole,
 } from "@/lib/local-auth";
+import { AdminEmployerModal } from "./admin-employer-modal";
 
 const PLAN_LABELS: Record<PlanId, string> = {
   free: "Free",
@@ -38,6 +39,7 @@ export function UsersTable({
 }) {
   const [query, setQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState<RoleFilter>("all");
+  const [viewingEmployer, setViewingEmployer] = useState<string | null>(null);
 
   const filteredUsers = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -193,6 +195,16 @@ export function UsersTable({
                           <option value="enterprise">Enterprise Plan</option>
                         </select>
                       )}
+                      {user.role === "employer" && (
+                        <button
+                          type="button"
+                          onClick={() => setViewingEmployer(user.email)}
+                          aria-label={`View ${user.email}`}
+                          className="flex h-7 w-7 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-brand-navy"
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                        </button>
+                      )}
                       <button
                         type="button"
                         onClick={() => handleDelete(user.email)}
@@ -209,6 +221,13 @@ export function UsersTable({
           </tbody>
         </table>
       </div>
+
+      {viewingEmployer && (
+        <AdminEmployerModal
+          employerEmail={viewingEmployer}
+          onClose={() => setViewingEmployer(null)}
+        />
+      )}
     </div>
   );
 }

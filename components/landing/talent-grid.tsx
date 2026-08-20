@@ -4,8 +4,13 @@ import { SearchFilterBar } from "./search-filter-bar";
 
 export function TalentGrid() {
   return (
-    <section id="talent" className="bg-slate-50 py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section id="talent" className="relative overflow-hidden bg-white py-24">
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-32 top-0 h-[22rem] w-[22rem] rounded-full bg-brand-blue/[0.05] blur-3xl" />
+        <div className="absolute -right-32 bottom-0 h-[22rem] w-[22rem] rounded-full bg-brand-accent/[0.06] blur-3xl" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-brand-navy sm:text-4xl">
             Featured, verified talent

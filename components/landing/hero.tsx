@@ -56,12 +56,14 @@ export function Hero() {
             icon={Search}
             title="Find Talent"
             subtitle="Browse & hire specialists"
+            tone="brand"
           />
           <PickerCard
             href="/signup?role=jobseeker"
             icon={UserRound}
             title="Find a Job"
             subtitle="Create your free profile"
+            tone="brand"
           />
         </div>
       </div>

@@ -1,7 +1,9 @@
 // DEMO-ONLY employer report log, backed by localStorage. Jobseekers file
 // these against a job posting/employer; admins review them from the
-// Reports tab. No moderation action is taken automatically.
+// Reports tab. Marking a report reviewed or resolved notifies the
+// reporter in-app so they know their report was seen.
 
+import { addNotification } from "./notifications-store";
 import type { ReportReason } from "./types";
 
 export interface EmployerReport {
@@ -15,7 +17,7 @@ export interface EmployerReport {
   reason: ReportReason;
   details: string;
   createdAt: string;
-  status: "open" | "reviewed";
+  status: "open" | "reviewed" | "resolved";
 }
 
 const REPORTS_KEY = "directstaffph_employer_reports";
@@ -63,8 +65,40 @@ export function submitReport(entry: {
   return report;
 }
 
+function setStatus(
+  id: string,
+  status: EmployerReport["status"],
+  notificationTitle: string,
+  notificationMessage: (companyName: string) => string
+): void {
+  const reports = readAll();
+  const report = reports.find((r) => r.id === id);
+  if (!report) return;
+
+  writeAll(reports.map((r) => (r.id === id ? { ...r, status } : r)));
+  addNotification(
+    report.reporterEmail,
+    notificationTitle,
+    notificationMessage(report.companyName)
+  );
+}
+
 export function markReportReviewed(id: string): void {
-  writeAll(
-    readAll().map((r) => (r.id === id ? { ...r, status: "reviewed" } : r))
+  setStatus(
+    id,
+    "reviewed",
+    "Your report was reviewed",
+    (companyName) =>
+      `DirectStaffPH reviewed your report about ${companyName}. We're looking into it.`
+  );
+}
+
+export function markReportResolved(id: string): void {
+  setStatus(
+    id,
+    "resolved",
+    "Your report was resolved",
+    (companyName) =>
+      `DirectStaffPH resolved your report about ${companyName}. Thanks for helping keep the platform safe.`
   );
 }

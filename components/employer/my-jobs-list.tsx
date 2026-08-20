@@ -4,7 +4,7 @@ import { Plus, Trash2, Users } from "lucide-react";
 import { deleteJob } from "@/lib/jobs-store";
 import type { JobPosting } from "@/lib/types";
 
-const DASHBOARD_JOB_LIMIT = 4;
+const DASHBOARD_JOB_LIMIT = 3;
 
 export function MyJobsList({
   jobs,

@@ -93,10 +93,10 @@ export function NotificationsBell({
             align === "left" ? "md:left-0" : "md:right-0"
           }`}
         >
-          <p className="px-3 py-2 text-sm font-semibold text-brand-navy">
+          <p className="border-b border-slate-100 px-3 pb-2.5 text-sm font-semibold text-brand-navy">
             Notifications
           </p>
-          <div className="max-h-80 overflow-y-auto">
+          <div className="max-h-80 space-y-1.5 overflow-y-auto pt-1.5">
             {notifications.length === 0 && (
               <p className="px-3 py-4 text-center text-sm text-slate-400">
                 No notifications yet.
@@ -105,7 +105,7 @@ export function NotificationsBell({
             {notifications.map((item) => (
               <div
                 key={item.id}
-                className="rounded-xl px-3 py-2.5 transition-colors hover:bg-slate-50"
+                className="rounded-xl border border-slate-100 bg-slate-50/60 px-3 py-2.5 transition-colors hover:border-slate-200 hover:bg-slate-50"
               >
                 <p className="text-sm font-medium text-brand-navy">
                   {item.title}

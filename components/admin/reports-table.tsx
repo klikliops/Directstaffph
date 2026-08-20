@@ -1,14 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Flag } from "lucide-react";
+import { Building2, Check, Flag } from "lucide-react";
 import {
   getAllReports,
   markReportReviewed,
+  markReportResolved,
   REPORTS_CHANGE_EVENT,
   type EmployerReport,
 } from "@/lib/reports-store";
 import { REPORT_REASONS } from "@/lib/types";
+import { AdminEmployerModal } from "./admin-employer-modal";
 
 function reasonLabel(reason: EmployerReport["reason"]): string {
   return REPORT_REASONS.find((r) => r.id === reason)?.label ?? reason;
@@ -23,8 +25,15 @@ function formatDateTime(iso: string): string {
   });
 }
 
+const STATUS_STYLES: Record<EmployerReport["status"], string> = {
+  open: "border-red-100 bg-red-50/40",
+  reviewed: "border-amber-100 bg-amber-50/40",
+  resolved: "border-slate-100 bg-slate-50",
+};
+
 export function ReportsTable() {
   const [reports, setReports] = useState<EmployerReport[]>([]);
+  const [viewingEmployer, setViewingEmployer] = useState<string | null>(null);
 
   useEffect(() => {
     function refresh() {
@@ -36,10 +45,6 @@ export function ReportsTable() {
   }, []);
 
   const openCount = reports.filter((r) => r.status === "open").length;
-
-  function handleMarkReviewed(id: string) {
-    markReportReviewed(id);
-  }
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -64,11 +69,7 @@ export function ReportsTable() {
           {reports.map((report) => (
             <li
               key={report.id}
-              className={`rounded-xl border p-4 ${
-                report.status === "open"
-                  ? "border-red-100 bg-red-50/40"
-                  : "border-slate-100 bg-slate-50"
-              }`}
+              className={`rounded-xl border p-4 ${STATUS_STYLES[report.status]}`}
             >
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
@@ -103,26 +104,63 @@ export function ReportsTable() {
                 Reported by {report.reporterName} ({report.reporterEmail})
               </p>
 
-              <div className="mt-3">
-                {report.status === "open" ? (
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                {report.employerEmail && (
                   <button
                     type="button"
-                    onClick={() => handleMarkReviewed(report.id)}
+                    onClick={() => setViewingEmployer(report.employerEmail!)}
+                    className="flex items-center gap-1.5 rounded-full border border-slate-200 px-3.5 py-1.5 text-xs font-semibold text-brand-navy transition-colors hover:bg-slate-50"
+                  >
+                    <Building2 className="h-3.5 w-3.5" />
+                    View Employer
+                  </button>
+                )}
+
+                {report.status === "open" && (
+                  <button
+                    type="button"
+                    onClick={() => markReportReviewed(report.id)}
                     className="flex items-center gap-1.5 rounded-full bg-brand-navy px-3.5 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90"
                   >
                     <Check className="h-3.5 w-3.5" />
                     Mark Reviewed
                   </button>
-                ) : (
-                  <span className="flex w-fit items-center gap-1.5 rounded-full bg-slate-100 px-3.5 py-1.5 text-xs font-semibold text-slate-500">
+                )}
+
+                {report.status === "reviewed" && (
+                  <button
+                    type="button"
+                    onClick={() => markReportResolved(report.id)}
+                    className="flex items-center gap-1.5 rounded-full bg-emerald-600 px-3.5 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-90"
+                  >
                     <Check className="h-3.5 w-3.5" />
+                    Mark Resolved
+                  </button>
+                )}
+
+                {report.status === "reviewed" && (
+                  <span className="flex items-center gap-1.5 rounded-full bg-amber-50 px-3.5 py-1.5 text-xs font-semibold text-amber-600">
                     Reviewed
+                  </span>
+                )}
+
+                {report.status === "resolved" && (
+                  <span className="flex items-center gap-1.5 rounded-full bg-slate-100 px-3.5 py-1.5 text-xs font-semibold text-slate-500">
+                    <Check className="h-3.5 w-3.5" />
+                    Resolved
                   </span>
                 )}
               </div>
             </li>
           ))}
         </ul>
+      )}
+
+      {viewingEmployer && (
+        <AdminEmployerModal
+          employerEmail={viewingEmployer}
+          onClose={() => setViewingEmployer(null)}
+        />
       )}
     </div>
   );
