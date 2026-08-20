@@ -6,6 +6,7 @@ import { getDisplayName, getSession, type MockUser } from "@/lib/local-auth";
 import { PointsBanner } from "@/components/jobseeker/points-banner";
 import { DashboardHighlights } from "@/components/jobseeker/dashboard-highlights";
 import { VipUpsellBanner } from "@/components/jobseeker/vip-upsell-banner";
+import { DailyCheckIn } from "@/components/jobseeker/daily-checkin";
 
 export default function JobseekerDashboardPage() {
   const [session, setSession] = useState<MockUser | null>(null);
@@ -47,6 +48,12 @@ export default function JobseekerDashboardPage() {
       <div className="mt-6">
         <VipUpsellBanner session={session} />
       </div>
+
+      {session && (
+        <div className="mt-6">
+          <DailyCheckIn session={session} onUpdate={setSession} />
+        </div>
+      )}
 
       <div className="mt-6">
         <DashboardHighlights session={session} onSessionUpdate={setSession} />

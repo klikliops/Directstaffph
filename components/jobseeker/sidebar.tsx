@@ -21,7 +21,7 @@ import {
   SESSION_CHANGE_EVENT,
   type MockUser,
 } from "@/lib/local-auth";
-import { JOBSEEKER_POINT_TASKS, calculatePoints } from "@/lib/points";
+import { calculateTotalScore } from "@/lib/points";
 import { Logo } from "@/components/shared/logo-mark";
 import { NotificationsBell } from "@/components/shared/notifications-bell";
 
@@ -106,7 +106,7 @@ export function JobseekerSidebar() {
           <p className="text-xs text-slate-400">
             Jobseeker &middot;{" "}
             <span className="font-semibold text-brand-accent-dark">
-              {calculatePoints(session, JOBSEEKER_POINT_TASKS)} pts
+              {calculateTotalScore(session)} pts
             </span>
           </p>
         </div>

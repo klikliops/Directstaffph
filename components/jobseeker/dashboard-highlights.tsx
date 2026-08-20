@@ -148,6 +148,9 @@ export function DashboardHighlights({
                       <MapPin className="h-3 w-3" />
                       {job.isRemote ? "Remote" : "On-site"}
                     </p>
+                    <p className="mt-1.5 line-clamp-2 text-xs leading-5 text-slate-500">
+                      {job.description}
+                    </p>
                   </Link>
                   <span className="text-sm font-semibold text-brand-navy">
                     ${job.monthlySalaryMinUsd.toLocaleString()}&ndash;$

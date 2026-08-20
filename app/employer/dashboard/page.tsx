@@ -64,7 +64,15 @@ export default function EmployerDashboardPage() {
           <PlanCard planId={session?.planId} />
         </div>
         <div className="lg:col-span-3">
-          <MyJobsList jobs={jobs} />
+          {session && (
+            <MyJobsList
+              jobs={jobs}
+              employerEmail={session.email}
+              onJobDeleted={(jobId) =>
+                setJobs((prev) => prev.filter((j) => j.id !== jobId))
+              }
+            />
+          )}
         </div>
       </div>
 

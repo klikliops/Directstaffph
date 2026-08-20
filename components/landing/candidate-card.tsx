@@ -9,7 +9,7 @@ export function CandidateCard({ candidate }: { candidate: CandidateProfile }) {
   const [showUpsell, setShowUpsell] = useState(false);
 
   return (
-    <article className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
+    <article className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-cyan-200 hover:shadow-md">
       <div className="flex items-start gap-3">
         <div
           className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${candidate.avatarColorFrom} ${candidate.avatarColorTo} text-sm font-semibold text-white`}

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  Briefcase,
   CreditCard,
   Crown,
   LayoutDashboard,
@@ -29,6 +30,7 @@ const NAV_ITEMS = [
   { href: "/employer/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/employer/talent", label: "Browse Talent", icon: Search },
   { href: "/employer/jobs/new", label: "Post a Job", icon: Plus },
+  { href: "/employer/jobs", label: "My Jobs", icon: Briefcase },
   { href: "/employer/messages", label: "Messages", icon: MessageSquare },
   { href: "/employer/leaderboard", label: "Leaderboard", icon: Trophy },
   { href: "/employer/billing", label: "Plans & Billing", icon: CreditCard },

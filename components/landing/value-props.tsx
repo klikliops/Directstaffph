@@ -29,8 +29,13 @@ const VALUE_PROPS = [
 
 export function ValueProps() {
   return (
-    <section id="value" className="bg-white py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section id="value" className="relative overflow-hidden bg-white py-24">
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -right-40 top-0 h-[24rem] w-[24rem] rounded-full bg-brand-accent/[0.05] blur-3xl" />
+        <div className="absolute -left-40 bottom-0 h-[24rem] w-[24rem] rounded-full bg-brand-blue/[0.05] blur-3xl" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-brand-navy sm:text-4xl">
             Why founders switch from agencies
@@ -43,7 +48,7 @@ export function ValueProps() {
         <div className="mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {VALUE_PROPS.map(({ icon: Icon, title, description }) => (
             <div key={title} className="flex flex-col items-start">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-navy text-brand-accent">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-navy to-brand-blue text-brand-accent shadow-sm">
                 <Icon className="h-5 w-5" />
               </div>
               <h3 className="mt-4 text-base font-semibold text-brand-navy">

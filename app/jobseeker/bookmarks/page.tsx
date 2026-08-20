@@ -4,16 +4,22 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Bookmark, BookmarkCheck, Briefcase, MapPin } from "lucide-react";
 import { getSession, toggleBookmark, type MockUser } from "@/lib/local-auth";
-import { MOCK_JOBS } from "@/lib/mock-data";
+import { getAllJobs } from "@/lib/jobs-store";
+import type { JobPosting } from "@/lib/types";
 import { SkillBadge } from "@/components/landing/skill-badge";
 import { ComingSoon } from "@/components/shared/coming-soon";
 
 export default function BookmarkedJobsPage() {
   const [session, setSession] = useState<MockUser | null>(null);
   const [checkedSession, setCheckedSession] = useState(false);
+  const [jobs, setJobs] = useState<JobPosting[]>([]);
 
   useEffect(() => {
     setSession(getSession());
+    // getAllJobs() reads localStorage, which isn't available during SSR --
+    // computing this eagerly would return different data on the server
+    // (empty) vs. the client's first paint, causing a hydration mismatch.
+    setJobs(getAllJobs());
     setCheckedSession(true);
   }, []);
 
@@ -35,7 +41,7 @@ export default function BookmarkedJobsPage() {
     );
   }
 
-  const bookmarkedJobs = MOCK_JOBS.filter((job) =>
+  const bookmarkedJobs = jobs.filter((job) =>
     session.bookmarkedJobIds?.includes(job.id)
   );
 

@@ -7,14 +7,17 @@ import {
   Bookmark,
   BookmarkCheck,
   Briefcase,
+  Building2,
+  Calendar,
   Check,
   Flag,
   Lock,
   MapPin,
 } from "lucide-react";
-import { getJobById } from "@/lib/jobs-store";
+import { getJobById, getJobsByEmployer } from "@/lib/jobs-store";
 import {
   applyToJob,
+  getAllUsers,
   getDisplayName,
   getSession,
   isLockedFromApplying,
@@ -33,6 +36,8 @@ export default function JobDetailPage({
   const { jobId } = use(params);
   const [session, setSession] = useState<MockUser | null>(null);
   const [job, setJob] = useState<JobPosting | null | undefined>(undefined);
+  const [employer, setEmployer] = useState<MockUser | null>(null);
+  const [employerJobCount, setEmployerJobCount] = useState(0);
   const [reporting, setReporting] = useState(false);
 
   useEffect(() => {
@@ -41,7 +46,16 @@ export default function JobDetailPage({
     // available during SSR -- computing this eagerly could return a
     // different result on the server vs. the client's first paint for
     // employer-created (non-seed) jobs, causing a hydration mismatch.
-    setJob(getJobById(jobId));
+    const found = getJobById(jobId);
+    setJob(found);
+
+    if (found?.postedByEmail) {
+      const owner = getAllUsers().find(
+        (u) => u.email.toLowerCase() === found.postedByEmail?.toLowerCase()
+      );
+      setEmployer(owner ?? null);
+      setEmployerJobCount(getJobsByEmployer(found.postedByEmail).length);
+    }
   }, [jobId]);
 
   if (job === undefined) {
@@ -163,6 +177,43 @@ export default function JobDetailPage({
             {job.description}
           </p>
         </div>
+
+        {employer && (
+          <div className="mt-5 border-t border-slate-100 pt-5">
+            <h2 className="text-sm font-semibold text-brand-navy">
+              About the employer
+            </h2>
+            <div className="mt-3 flex items-start gap-3 rounded-xl bg-slate-50 p-4">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-brand-accent-dark shadow-sm">
+                <Building2 className="h-5 w-5" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-brand-navy">
+                  {employer.companyName || job.companyName}
+                </p>
+                <p className="text-xs text-slate-500">
+                  Posted by {getDisplayName(employer)}
+                </p>
+                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
+                  {employer.createdAt && (
+                    <span className="flex items-center gap-1">
+                      <Calendar className="h-3 w-3" />
+                      Member since{" "}
+                      {new Date(employer.createdAt).toLocaleDateString(undefined, {
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </span>
+                  )}
+                  <span className="flex items-center gap-1">
+                    <Briefcase className="h-3 w-3" />
+                    {employerJobCount} job{employerJobCount === 1 ? "" : "s"} posted
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {locked && (
           <div className="mt-5 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">

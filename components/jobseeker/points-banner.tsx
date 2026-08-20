@@ -1,9 +1,9 @@
 import { Sparkles } from "lucide-react";
 import type { MockUser } from "@/lib/local-auth";
-import { JOBSEEKER_POINT_TASKS, calculatePoints } from "@/lib/points";
+import { calculateTotalScore } from "@/lib/points";
 
 export function PointsBanner({ session }: { session: MockUser | null }) {
-  const points = calculatePoints(session, JOBSEEKER_POINT_TASKS);
+  const points = calculateTotalScore(session);
 
   return (
     <div className="flex shrink-0 items-center gap-3 rounded-2xl border border-cyan-100 bg-gradient-to-br from-cyan-50 to-white py-3 pl-3 pr-5">

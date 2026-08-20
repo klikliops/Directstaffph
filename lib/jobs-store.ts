@@ -1,8 +1,7 @@
-// DEMO-ONLY job postings store, backed by localStorage. Employer-created
-// postings live here; MOCK_JOBS (lib/mock-data.ts) are seed/example
-// listings with no owning employer account.
+// DEMO-ONLY job postings store, backed by localStorage. Everything jobseekers
+// browse comes from real employer accounts -- there are no seed/example
+// listings mixed in, so every job always resolves to a real postedByEmail.
 
-import { MOCK_JOBS } from "./mock-data";
 import type { JobPosting } from "./types";
 
 const JOBS_KEY = "directstaffph_employer_jobs";
@@ -24,9 +23,8 @@ function writeEmployerJobs(jobs: JobPosting[]) {
   window.dispatchEvent(new Event(JOBS_CHANGE_EVENT));
 }
 
-// Employer-created postings first so they surface above the seed listings.
 export function getAllJobs(): JobPosting[] {
-  return [...readEmployerJobs(), ...MOCK_JOBS];
+  return readEmployerJobs();
 }
 
 export function getJobById(jobId: string): JobPosting | null {
@@ -52,4 +50,15 @@ export function createJob(
   };
   writeEmployerJobs([...readEmployerJobs(), newJob]);
   return newJob;
+}
+
+// Only the employer who posted a job can delete it.
+export function deleteJob(jobId: string, employerEmail: string): boolean {
+  const jobs = readEmployerJobs();
+  const job = jobs.find((j) => j.id === jobId);
+  if (!job || job.postedByEmail?.toLowerCase() !== employerEmail.toLowerCase()) {
+    return false;
+  }
+  writeEmployerJobs(jobs.filter((j) => j.id !== jobId));
+  return true;
 }

@@ -11,8 +11,9 @@ import { UsersTable } from "@/components/admin/users-table";
 import { ChangePasswordForm } from "@/components/admin/change-password-form";
 import { BroadcastEmailForm } from "@/components/admin/broadcast-email-form";
 import { ReportsTable } from "@/components/admin/reports-table";
+import { SupportTicketsTable } from "@/components/admin/support-tickets-table";
 
-type Tab = "accounts" | "reports" | "settings";
+type Tab = "accounts" | "reports" | "support" | "settings";
 
 export default function AdminPage() {
   const [unlocked, setUnlocked] = useState(false);
@@ -77,6 +78,7 @@ export default function AdminPage() {
             [
               { id: "accounts", label: "Accounts" },
               { id: "reports", label: "Reports" },
+              { id: "support", label: "Support" },
               { id: "settings", label: "Settings" },
             ] as { id: Tab; label: string }[]
           ).map((item) => (
@@ -109,6 +111,12 @@ export default function AdminPage() {
         {tab === "reports" && (
           <div className="mt-6">
             <ReportsTable />
+          </div>
+        )}
+
+        {tab === "support" && (
+          <div className="mt-6">
+            <SupportTicketsTable />
           </div>
         )}
 

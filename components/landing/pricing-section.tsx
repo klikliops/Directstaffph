@@ -4,8 +4,13 @@ import { PRICING_PLANS } from "@/lib/mock-data";
 
 export function PricingSection() {
   return (
-    <section id="pricing" className="bg-brand-navy py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section id="pricing" className="relative overflow-hidden bg-brand-navy py-24">
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute left-1/2 top-0 h-[26rem] w-[40rem] -translate-x-1/2 rounded-full bg-brand-blue/15 blur-3xl" />
+        <div className="absolute -right-24 bottom-0 h-[22rem] w-[22rem] rounded-full bg-brand-accent/10 blur-3xl" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Simple pricing for employers
@@ -22,7 +27,7 @@ export function PricingSection() {
               key={plan.id}
               className={`flex flex-col rounded-2xl border p-8 ${
                 plan.isMostPopular
-                  ? "border-brand-accent bg-white/[0.07] shadow-xl shadow-cyan-500/10"
+                  ? "border-brand-accent bg-gradient-to-b from-white/[0.09] to-white/[0.02] shadow-xl shadow-cyan-500/20 ring-1 ring-brand-accent/30"
                   : "border-white/10 bg-white/[0.03]"
               }`}
             >

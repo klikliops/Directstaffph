@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { getDisplayName, type MockUser } from "@/lib/local-auth";
 import { sendEmployerMessage } from "@/lib/messages-store";
-import { JOBSEEKER_POINT_TASKS, calculatePoints } from "@/lib/points";
+import { calculateTotalScore } from "@/lib/points";
 
 function getInitials(user: MockUser): string {
   const initials = `${user.firstName?.[0] ?? ""}${user.lastName?.[0] ?? ""}`;
@@ -36,7 +36,7 @@ export function JobseekerProfileModal({
 }) {
   const [messageText, setMessageText] = useState("");
   const [sent, setSent] = useState(false);
-  const points = calculatePoints(jobseeker, JOBSEEKER_POINT_TASKS);
+  const points = calculateTotalScore(jobseeker);
   const employed = Boolean(jobseeker.recruitedJobId);
 
   function handleSend() {
@@ -47,7 +47,7 @@ export function JobseekerProfileModal({
       toName: getDisplayName(jobseeker),
       jobId: "general",
       jobTitle: "your profile",
-      companyName: getDisplayName(employer),
+      companyName: employer.companyName || getDisplayName(employer),
       body: messageText.trim(),
     });
     setSent(true);

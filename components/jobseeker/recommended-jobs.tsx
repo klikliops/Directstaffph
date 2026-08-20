@@ -124,6 +124,9 @@ export function RecommendedJobs() {
                     <MapPin className="h-3 w-3" />
                     {job.isRemote ? "Remote" : "On-site"}
                   </p>
+                  <p className="mt-1.5 line-clamp-2 text-xs leading-5 text-slate-500">
+                    {job.description}
+                  </p>
                 </Link>
                 <div className="flex shrink-0 items-center gap-3">
                   <span className="text-sm font-semibold text-brand-navy">

@@ -29,6 +29,7 @@ export interface MockUser {
   jobInterest?: string;
   resumeSubmitted?: boolean;
   resumeFileName?: string;
+  videoIntroSubmitted?: boolean;
   profilePictureSet?: boolean;
   avatarColorFrom?: string;
   avatarColorTo?: string;
@@ -48,6 +49,15 @@ export interface MockUser {
   recruitedByEmail?: string;
   recruitedCompanyName?: string;
   recruitedAt?: string;
+  // Employer-only: shown to jobseekers in messages sent from the talent
+  // page / leaderboard instead of falling back to the employer's own name.
+  companyName?: string;
+  // Jobseeker-only: daily check-in streak. lastCheckInDate is a YYYY-MM-DD
+  // (local date) string, not a full ISO timestamp, so "already checked in
+  // today" is a plain string comparison.
+  lastCheckInDate?: string;
+  checkInStreak?: number;
+  checkInPoints?: number;
 }
 
 const USERS_KEY = "directstaffph_mock_users";
@@ -128,6 +138,36 @@ export function updateProfile(
   return updated;
 }
 
+// Password is excluded from updateProfile's update shape on purpose, so a
+// routine profile edit can never accidentally reset it -- this is the only
+// path allowed to change it, and it requires the current password.
+export function changePassword(
+  email: string,
+  currentPassword: string,
+  newPassword: string
+): { ok: true } | { ok: false; error: string } {
+  const users = readUsers();
+  const index = users.findIndex(
+    (u) => u.email.toLowerCase() === email.toLowerCase()
+  );
+  if (index === -1) return { ok: false, error: "Account not found." };
+  if (users[index].password !== currentPassword) {
+    return { ok: false, error: "Current password is incorrect." };
+  }
+
+  const updated = { ...users[index], password: newPassword };
+  const nextUsers = [...users];
+  nextUsers[index] = updated;
+  writeUsers(nextUsers);
+
+  const session = getSession();
+  if (session && session.email.toLowerCase() === email.toLowerCase()) {
+    saveSession(updated);
+  }
+
+  return { ok: true };
+}
+
 export function isLockedFromApplying(user: MockUser | null): boolean {
   return Boolean(user?.recruitedJobId) && user?.recruitedEmploymentType === "Full-time";
 }
@@ -202,6 +242,52 @@ export function removeEmployment(email: string): MockUser | null {
     recruitedCompanyName: undefined,
     recruitedAt: undefined,
   });
+}
+
+const CHECK_IN_POINTS = 5;
+
+// Local (not UTC) YYYY-MM-DD so "today" matches the user's own calendar day
+// rather than flipping over at UTC midnight mid-afternoon for PH users.
+function localDateKey(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+export function dailyCheckIn(
+  email: string
+): { user: MockUser; pointsEarned: number; alreadyCheckedIn: boolean } | null {
+  const users = readUsers();
+  const index = users.findIndex(
+    (u) => u.email.toLowerCase() === email.toLowerCase()
+  );
+  if (index === -1) return null;
+
+  const current = users[index];
+  const today = localDateKey(new Date());
+  if (current.lastCheckInDate === today) {
+    return { user: current, pointsEarned: 0, alreadyCheckedIn: true };
+  }
+
+  const yesterday = localDateKey(new Date(Date.now() - 24 * 60 * 60 * 1000));
+  const nextStreak =
+    current.lastCheckInDate === yesterday ? (current.checkInStreak ?? 0) + 1 : 1;
+
+  const updated = updateProfile(email, {
+    lastCheckInDate: today,
+    checkInStreak: nextStreak,
+    checkInPoints: (current.checkInPoints ?? 0) + CHECK_IN_POINTS,
+  });
+  if (!updated) return null;
+
+  addNotification(
+    email,
+    "Daily check-in complete",
+    `+${CHECK_IN_POINTS} pts. You're on a ${nextStreak}-day streak.`
+  );
+
+  return { user: updated, pointsEarned: CHECK_IN_POINTS, alreadyCheckedIn: false };
 }
 
 export function toggleBookmark(email: string, jobId: string): MockUser | null {

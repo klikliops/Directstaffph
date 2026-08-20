@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, useState, type ChangeEvent } from "react";
-import { Check, Circle, ImagePlus, Upload } from "lucide-react";
+import Link from "next/link";
+import { Check, Circle, ImagePlus, Upload, Video } from "lucide-react";
 import { updateProfile, type MockUser } from "@/lib/local-auth";
 import { JOBSEEKER_MAX_POINTS, JOBSEEKER_POINT_TASKS, calculatePoints } from "@/lib/points";
 
@@ -22,6 +23,7 @@ export function PointsChecklist({
   onUpdate: (user: MockUser) => void;
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
 
   const points = calculatePoints(session, JOBSEEKER_POINT_TASKS);
@@ -33,6 +35,13 @@ export function PointsChecklist({
       resumeSubmitted: true,
       resumeFileName: file.name,
     });
+    if (updated) onUpdate(updated);
+  }
+
+  function handleVideoIntroChange(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const updated = updateProfile(session.email, { videoIntroSubmitted: true });
     if (updated) onUpdate(updated);
   }
 
@@ -125,11 +134,41 @@ export function PointsChecklist({
                   </button>
                 )}
 
+                {!done && task.key === "videoIntro" && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => videoInputRef.current?.click()}
+                      className="flex items-center gap-1.5 rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-brand-navy transition-colors hover:bg-slate-50"
+                    >
+                      <Video className="h-3 w-3" />
+                      Upload
+                    </button>
+                    <input
+                      ref={videoInputRef}
+                      type="file"
+                      accept="video/*"
+                      className="hidden"
+                      onChange={handleVideoIntroChange}
+                    />
+                  </>
+                )}
+
                 {!done && (task.key === "fullName" || task.key === "jobInterest") && (
                   <span className="text-xs text-slate-400">
                     Use the form above
                   </span>
                 )}
+
+                {!done &&
+                  (task.key === "firstApplication" || task.key === "firstBookmark") && (
+                    <Link
+                      href="/jobseeker/jobs"
+                      className="text-xs font-semibold text-brand-accent-dark hover:underline"
+                    >
+                      Browse Job Boards
+                    </Link>
+                  )}
               </div>
             </li>
           );

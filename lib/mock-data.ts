@@ -1,4 +1,4 @@
-import type { CandidateProfile, JobPosting, PricingPlan } from "./types";
+import type { CandidateProfile, PricingPlan } from "./types";
 
 // Placeholder data for local development. Replace with Supabase queries once
 // the `candidates` table is live — see the README for the suggested schema.
@@ -128,73 +128,6 @@ export const MOCK_CANDIDATES: CandidateProfile[] = [
     bio: "Builds and runs SOPs, ClickUp workflows, and light bookkeeping for a UK marketing agency.",
     isContactUnlocked: false,
     createdAt: "2026-05-11",
-  },
-];
-
-export const MOCK_JOBS: JobPosting[] = [
-  {
-    id: "j1",
-    slug: "shopify-ecommerce-ops-manager",
-    title: "Shopify E-commerce Ops Manager",
-    companyName: "Northbound Apparel Co.",
-    category: "E-commerce Ops",
-    employmentType: "Full-time",
-    monthlySalaryMinUsd: 1600,
-    monthlySalaryMaxUsd: 2200,
-    requiredSkills: ["Shopify", "Klaviyo", "Zendesk"],
-    isRemote: true,
-    postedAt: "2026-08-05",
-    applicantCount: 12,
-    description:
-      "Own day-to-day store operations, fulfillment, and email flows for a growing DTC apparel brand.",
-  },
-  {
-    id: "j2",
-    slug: "short-form-video-editor-ugc",
-    title: "Short-Form Video Editor (UGC / Paid Social)",
-    companyName: "Loop Media Group",
-    category: "Video Editing",
-    employmentType: "Part-time",
-    monthlySalaryMinUsd: 1000,
-    monthlySalaryMaxUsd: 1800,
-    requiredSkills: ["CapCut", "Premiere Pro"],
-    isRemote: true,
-    postedAt: "2026-08-09",
-    applicantCount: 27,
-    description:
-      "Cut fast-turnaround TikTok and Reels content for three e-commerce ad accounts.",
-  },
-  {
-    id: "j3",
-    slug: "remote-executive-assistant",
-    title: "Executive Assistant to CEO",
-    companyName: "Harbor & Vale Consulting",
-    category: "Executive Assistant",
-    employmentType: "Full-time",
-    monthlySalaryMinUsd: 1300,
-    monthlySalaryMaxUsd: 1900,
-    requiredSkills: ["ClickUp", "Notion"],
-    isRemote: true,
-    postedAt: "2026-08-11",
-    applicantCount: 19,
-    description:
-      "Manage inbox, calendar, and vendor coordination for a US-based consulting founder.",
-  },
-  {
-    id: "j4",
-    slug: "bookkeeper-agency-accounts",
-    title: "Bookkeeper — Multi-Client Agency Accounts",
-    companyName: "Ledger & Co.",
-    category: "Finance & Bookkeeping",
-    employmentType: "Full-time",
-    monthlySalaryMinUsd: 1100,
-    monthlySalaryMaxUsd: 1600,
-    requiredSkills: ["Xero", "QuickBooks"],
-    isRemote: true,
-    postedAt: "2026-08-07",
-    applicantCount: 8,
-    description:
-      "Handle monthly close, AR/AP, and payroll across a portfolio of small agency clients.",
   },
 ];
 

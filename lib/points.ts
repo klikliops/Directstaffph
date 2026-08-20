@@ -37,7 +37,19 @@ export const JOBSEEKER_POINT_TASKS: PointTask[] = [
     key: "videoIntro",
     label: "Add a video intro",
     points: 10,
-    done: () => false,
+    done: (user) => Boolean(user.videoIntroSubmitted),
+  },
+  {
+    key: "firstApplication",
+    label: "Apply to your first job",
+    points: 15,
+    done: (user) => Boolean(user.appliedJobIds?.length),
+  },
+  {
+    key: "firstBookmark",
+    label: "Bookmark a job you like",
+    points: 10,
+    done: (user) => Boolean(user.bookmarkedJobIds?.length),
   },
 ];
 
@@ -54,6 +66,14 @@ export function calculatePoints(
   return tasks.reduce((sum, task) => sum + (task.done(user) ? task.points : 0), 0);
 }
 
+// Profile-completion points (calculatePoints, bounded by JOBSEEKER_MAX_POINTS)
+// plus accumulated daily check-in points, which have no ceiling. This is the
+// number shown as "your score" everywhere outside the profile checklist,
+// which needs the bounded, task-only figure for its progress bar.
+export function calculateTotalScore(user: MockUser | null): number {
+  return calculatePoints(user, JOBSEEKER_POINT_TASKS) + (user?.checkInPoints ?? 0);
+}
+
 // Ranks every jobseeker by score, highest first -- shared by the employer
 // leaderboard, the talent browse page, and a jobseeker's own dashboard so
 // "your rank" and "top jobseekers" always agree on the same ordering.
@@ -62,6 +82,6 @@ export function rankJobseekers(
 ): { user: MockUser; points: number }[] {
   return users
     .filter((u) => u.role === "jobseeker")
-    .map((u) => ({ user: u, points: calculatePoints(u, JOBSEEKER_POINT_TASKS) }))
+    .map((u) => ({ user: u, points: calculateTotalScore(u) }))
     .sort((a, b) => b.points - a.points);
 }
